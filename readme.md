@@ -7,7 +7,7 @@ Bottom drawer web component / Ionic 5.
 # Installation
 
 ```
-$ npm i zt-bottom-drawer --save
+$ npm i @zoff-tech/zt-bottom-drawer
 ```
 
 ## Properties
