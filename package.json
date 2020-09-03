@@ -1,6 +1,6 @@
 {
   "name": "@zoff-tech/zt-bottom-drawer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bottom Drawer / Web Component",
   "main": "dist/index.cjs.js",
   "module": "dist/custom-elements/index.js",
@@ -10,9 +10,6 @@
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/zt-bottom-drawer/zt-bottom-drawer.js",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "files": [
     "dist/",
     "loader/"
