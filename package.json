@@ -1,0 +1,48 @@
+{
+  "name": "@zoff-tech/zt-bottom-drawer",
+  "version": "1.0.0",
+  "description": "Bottom Drawer / Web Component",
+  "main": "dist/index.cjs.js",
+  "module": "dist/custom-elements/index.js",
+  "es2015": "dist/esm/index.mjs",
+  "es2017": "dist/esm/index.mjs",
+  "types": "dist/custom-elements/index.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/zt-bottom-drawer/zt-bottom-drawer.js",
+  "files": [
+    "dist/",
+    "loader/"
+  ],
+  "scripts": {
+    "build-docs":"stencil build --docs-readme",
+    "build": "stencil build --docs",
+    "start": "stencil build --dev --watch --serve",
+    "test": "stencil test --spec --e2e",
+    "test.watch": "stencil test --spec --e2e --watchAll",
+    "generate": "stencil generate"
+  },
+  "dependencies": {
+    "@ionic/core": "^5.3.2",
+    "@stencil/core": "^2.0.1"
+  },
+  "author": "Rodrigo Zoff <rodrigo@zoff.tech> (https://github.com/rodrigozoff)",
+  "bugs": {
+    "url": "https://github.com/rodrigozoff/zt-bottom-drawer/issues"
+  },
+  "homepage": "https://github.com/rodrigozoff/zt-bottom-drawer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/rodrigozoff/zt-bottom-drawer.git"
+  },
+  "keywords": [
+    "ionic",
+    "stenciljs",
+    "webcomponent",
+    "ionic5",
+    "drawer",
+    "bottom drawer",
+    "bottom slide"
+  ]
+}
