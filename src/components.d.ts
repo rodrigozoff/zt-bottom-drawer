@@ -8,8 +8,9 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ZTDrawerState } from "./components/zt-bottom-drawer/drawer-state";
 export namespace Components {
     interface ZtBottomDrawer {
-        "addCallbackCanActivateState": (callback: (state: ZTDrawerState) => Promise<boolean | undefined> | undefined) => Promise<void>;
-        "addCallbackCanDeactivateState": (callback: (state: ZTDrawerState) => Promise<boolean | undefined> | undefined) => Promise<void>;
+        "addCallbackCanActivateState": (callback: (state: ZTDrawerState, oldState: ZTDrawerState, drawerElement: HTMLElement, contentElement: HTMLElement) => Promise<boolean | void> | void) => Promise<void>;
+        "addCallbackCanDeactivateState": (callback: (state: ZTDrawerState, newState: ZTDrawerState, drawerElement: HTMLElement, contentElement: HTMLElement) => Promise<boolean | void> | void) => Promise<void>;
+        "autoHeightContent": boolean;
         "disableMove": boolean;
         "distanceBottomClose": number;
         "distanceBottomOpen": number;
@@ -31,12 +32,14 @@ declare global {
 }
 declare namespace LocalJSX {
     interface ZtBottomDrawer {
+        "autoHeightContent"?: boolean;
         "disableMove"?: boolean;
         "distanceBottomClose"?: number;
         "distanceBottomOpen"?: number;
         "distanceTopFullOpen"?: number;
         "easing"?: string;
         "onChangeState"?: (event: CustomEvent<ZTDrawerState>) => void;
+        "onCloseBottom"?: (event: CustomEvent<void>) => void;
         "state"?: ZTDrawerState;
     }
     interface IntrinsicElements {

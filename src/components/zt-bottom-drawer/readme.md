@@ -9,6 +9,7 @@
 
 | Property              | Attribute                | Description | Type                                                                   | Default                           |
 | --------------------- | ------------------------ | ----------- | ---------------------------------------------------------------------- | --------------------------------- |
+| `autoHeightContent`   | `auto-height-content`    |             | `boolean`                                                              | `true`                            |
 | `disableMove`         | `disable-move`           |             | `boolean`                                                              | `false`                           |
 | `distanceBottomClose` | `distance-bottom-close`  |             | `number`                                                               | `60`                              |
 | `distanceBottomOpen`  | `distance-bottom-open`   |             | `number`                                                               | `350`                             |
@@ -22,11 +23,12 @@
 | Event         | Description | Type                                                                                |
 | ------------- | ----------- | ----------------------------------------------------------------------------------- |
 | `changeState` |             | `CustomEvent<ZTDrawerState.BOTTOM \| ZTDrawerState.FULLOPEN \| ZTDrawerState.OPEN>` |
+| `closeBottom` |             | `CustomEvent<void>`                                                                 |
 
 
 ## Methods
 
-### `addCallbackCanActivateState(callback: (state: ZTDrawerState) => Promise<boolean | undefined> | undefined) => Promise<void>`
+### `addCallbackCanActivateState(callback: (state: ZTDrawerState, oldState: ZTDrawerState, drawerElement: HTMLElement, contentElement: HTMLElement) => Promise<boolean | void> | void) => Promise<void>`
 
 
 
@@ -36,7 +38,7 @@ Type: `Promise<void>`
 
 
 
-### `addCallbackCanDeactivateState(callback: (state: ZTDrawerState) => Promise<boolean | undefined> | undefined) => Promise<void>`
+### `addCallbackCanDeactivateState(callback: (state: ZTDrawerState, newState: ZTDrawerState, drawerElement: HTMLElement, contentElement: HTMLElement) => Promise<boolean | void> | void) => Promise<void>`
 
 
 
