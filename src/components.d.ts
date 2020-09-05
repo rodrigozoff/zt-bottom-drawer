@@ -5,18 +5,23 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ZTDrawerState } from "./components/zt-bottom-drawer/drawer-state";
+import { ZTHTMLElementsDrawer, ZTPositionDrawer } from "./components/zt-bottom-drawer/zt-bottom-drawer";
 export namespace Components {
     interface ZtBottomDrawer {
-        "addCallbackCanActivateState": (callback: (state: ZTDrawerState, oldState: ZTDrawerState, drawerElement: HTMLElement, contentElement: HTMLElement) => Promise<boolean | void> | void) => Promise<void>;
-        "addCallbackCanDeactivateState": (callback: (state: ZTDrawerState, newState: ZTDrawerState, drawerElement: HTMLElement, contentElement: HTMLElement) => Promise<boolean | void> | void) => Promise<void>;
+        "addCallbackCanActivateState": (callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>;
+        "addCallbackCanDeactivateState": (callback: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>;
         "autoHeightContent": boolean;
-        "disableMove": boolean;
-        "distanceBottomClose": number;
-        "distanceBottomOpen": number;
-        "distanceTopFullOpen": number;
+        "autoShowOnLoad": boolean;
+        "disableGesture": boolean;
         "easing": string;
-        "state": ZTDrawerState;
+        "getPositionByIndex": (index: number) => Promise<ZTPositionDrawer>;
+        "getPositionByName": (name: string) => Promise<ZTPositionDrawer>;
+        "hidden": boolean;
+        "hide": (notAnimate?: boolean | undefined) => Promise<void>;
+        "hideOnPositionZero": boolean;
+        "positionName": string;
+        "positions": string;
+        "show": (positionName: string, notAnimate?: boolean | undefined) => Promise<void>;
     }
 }
 declare global {
@@ -33,14 +38,15 @@ declare global {
 declare namespace LocalJSX {
     interface ZtBottomDrawer {
         "autoHeightContent"?: boolean;
-        "disableMove"?: boolean;
-        "distanceBottomClose"?: number;
-        "distanceBottomOpen"?: number;
-        "distanceTopFullOpen"?: number;
+        "autoShowOnLoad"?: boolean;
+        "disableGesture"?: boolean;
         "easing"?: string;
-        "onChangeState"?: (event: CustomEvent<ZTDrawerState>) => void;
-        "onCloseBottom"?: (event: CustomEvent<void>) => void;
-        "state"?: ZTDrawerState;
+        "hidden"?: boolean;
+        "hideOnPositionZero"?: boolean;
+        "onChangePositionEvent"?: (event: CustomEvent<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
+        "onHideEvent"?: (event: CustomEvent<ZTHTMLElementsDrawer>) => void;
+        "positionName"?: string;
+        "positions"?: string;
     }
     interface IntrinsicElements {
         "zt-bottom-drawer": ZtBottomDrawer;

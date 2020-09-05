@@ -10,30 +10,32 @@ Bottom Drawer WebComponent / StencilJS / Ionic 5
 $ npm i @zoff-tech/zt-bottom-drawer
 ```
 
+
 ## Properties
 
-| Property              | Attribute                | Description | Type                                                                   | Default                           |
-| --------------------- | ------------------------ | ----------- | ---------------------------------------------------------------------- | --------------------------------- |
-| `autoHeightContent`   | `auto-height-content`    |             | `boolean`                                                              | `true`                            |
-| `disableMove`         | `disable-move`           |             | `boolean`                                                              | `false`                           |
-| `distanceBottomClose` | `distance-bottom-close`  |             | `number`                                                               | `60`                              |
-| `distanceBottomOpen`  | `distance-bottom-open`   |             | `number`                                                               | `350`                             |
-| `distanceTopFullOpen` | `distance-top-full-open` |             | `number`                                                               | `10`                              |
-| `easing`              | `easing`                 |             | `string`                                                               | `'cubic-bezier(.56,.05,.91,.88)'` |
-| `state`               | `state`                  |             | `ZTDrawerState.BOTTOM \| ZTDrawerState.FULLOPEN \| ZTDrawerState.OPEN` | `ZTDrawerState.BOTTOM`            |
+| Property             | Attribute               | Description | Type      | Default                                           |
+| -------------------- | ----------------------- | ----------- | --------- | ------------------------------------------------- |
+| `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
+| `autoShowOnLoad`     | `auto-show-on-load`     |             | `boolean` | `true`                                            |
+| `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
+| `easing`             | `easing`                |             | `string`  | `'cubic-bezier(.56,.05,.91,.88)'`                 |
+| `hidden`             | `hidden`                |             | `boolean` | `false`                                           |
+| `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `true`                                            |
+| `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
+| `positions`          | `positions`             |             | `string`  | `"close-b-10,bottom-b-200,middle-b-450,top-t-60"` |
 
 
 ## Events
 
-| Event         | Description | Type                                                                                |
-| ------------- | ----------- | ----------------------------------------------------------------------------------- |
-| `changeState` |             | `CustomEvent<ZTDrawerState.BOTTOM \| ZTDrawerState.FULLOPEN \| ZTDrawerState.OPEN>` |
-| `closeBottom` |             | `CustomEvent<void>`                                                                 |
+| Event                 | Description | Type                                                                                       |
+| --------------------- | ----------- | ------------------------------------------------------------------------------------------ |
+| `changePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`               |
+| `hideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; slotBorder: HTMLElement; slotContent: HTMLElement; }>` |
 
 
 ## Methods
 
-### `addCallbackCanActivateState(callback: (state: ZTDrawerState, oldState: ZTDrawerState, drawerElement: HTMLElement, contentElement: HTMLElement) => Promise<boolean | void> | void) => Promise<void>`
+### `addCallbackCanActivateState(callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>`
 
 
 
@@ -43,7 +45,47 @@ Type: `Promise<void>`
 
 
 
-### `addCallbackCanDeactivateState(callback: (state: ZTDrawerState, newState: ZTDrawerState, drawerElement: HTMLElement, contentElement: HTMLElement) => Promise<boolean | void> | void) => Promise<void>`
+### `addCallbackCanDeactivateState(callback: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `getPositionByIndex(index: number) => Promise<ZTPositionDrawer>`
+
+
+
+#### Returns
+
+Type: `Promise<ZTPositionDrawer>`
+
+
+
+### `getPositionByName(name: string) => Promise<ZTPositionDrawer>`
+
+
+
+#### Returns
+
+Type: `Promise<ZTPositionDrawer>`
+
+
+
+### `hide(notAnimate?: boolean | undefined) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `show(positionName: string, notAnimate?: boolean | undefined) => Promise<void>`
 
 
 
@@ -100,14 +142,14 @@ If the callbacks return a promise with result equal a false the change of state 
     this.drawer.addCallbackCanDeactivateState(this.callbackCanDeactivateChangeState);
   }
   
-  async callbackCanDeactivateChangeState(state: string, newState: string, drawerElement: HTMLElement, content: HTMLElement): Promise<boolean> {
-    if(state==="TOP"){
+  async callbackCanDeactivateChangeState(positionName: string, newPositionName: string, elemnts:any): Promise<boolean> {
+    if(state==="TtopOP"){
       return false; 
     }
     return true;
    }
 
-  async callbackCanActivateChangeState(state: string, oldState: string, drawerElement: HTMLElement, content: HTMLElement): Promise<boolean> {
+  async callbackCanActivateChangeState(positionName: string, newPositionName: string, elemnts:any): Promise<boolean> {
     return true;
   }
 
@@ -334,18 +376,18 @@ If the callbacks return a promise with result equal a false the change of state 
       padding-right: 10px;
     }
 
-    zt-bottom-drawer [slot="border"]  {
+    zt-bottom-drawer [slot="border"] {
       width: 100%;
       height: 10px;
-      border:none;
+      border: none;
       border-top-color: #424040e7;
-      border-top-right-radius:8px;
-      border-top-left-radius:8px;
+      border-top-right-radius: 8px;
+      border-top-left-radius: 8px;
       background-color: #383434cc;
       border-top-style: solid;
       border-width: 1px;
-      border-bottom-right-radius:0px;
-      border-bottom-left-radius:0px;
+      border-bottom-right-radius: 0px;
+      border-bottom-left-radius: 0px;
       margin-left: 0px;
       -webkit-box-shadow: 0px -3px 7px 0px #383434e7;
       box-shadow: 0px -3px 7px 0px #383434e7;
@@ -359,7 +401,7 @@ If the callbacks return a promise with result equal a false the change of state 
     <div></div>
     <div></div>
   </div>
-  <zt-bottom-drawer id="drawer" distance-bottom-close="210" distance-top-full-open="50">
+  <zt-bottom-drawer id="drawer" positions="close-b-10,bottom-b-200,middle-b-450,top-t-60">
     <div slot="border">
     </div>
     <div slot="content">
@@ -401,23 +443,30 @@ If the callbacks return a promise with result equal a false the change of state 
     window.onload = () => {
       let drawer = document.getElementById("drawer");
 
-      drawer.addEventListener("closeBottom", () => { console.log("close drawer") });
-      drawer.addEventListener("changeState", () => { console.log("change state") });
+      drawer.addEventListener("hideEvent", () => {
+        setTimeout(() => {
+          drawer.show("middle");
+        }, 5000);
+      });
 
-      drawer.addCallbackCanDeactivateState((state, newState, drawer, content) => {
-        console.log("DeactivateState", state, drawer, content);
+      drawer.addEventListener("changePositionEvent", () => { console.log("change position") });
+
+      drawer.addCallbackCanDeactivateState((postionName, newPositionName, htmlElements) => {
+        console.log("DeactivateState", postionName, htmlElements);
         return true;
       });
 
-      drawer.addCallbackCanActivateState((state, oldState, drawer, content) => {
-        console.log("ActivateState", state, drawer, content);
-        if (state === "FULLOPEN") {
+      drawer.addCallbackCanActivateState((postionName, oldPostionName, htmlElements) => {
+        console.log("ActivateState", postionName, htmlElements);
+        if (postionName === "top") {
           return new Promise((resolve) => {
             document.getElementById("loader").classList.add("lds-ripple");
             setTimeout(() => {
               document.getElementById("loader").classList.remove("lds-ripple");
-              resolve(true);
-            }, 100 * (Math.random() * (8 - 4) + 4));
+              let resultRandom= Math.random() ;
+              console.log(resultRandom > 0.5 ? "Can Activate" : "Can't Activate");
+              resolve(resultRandom > 0.5 ? true : false);
+            }, 1000 * (Math.random() * (8 - 4) + 4));
           });
         }
         return true;
@@ -425,6 +474,8 @@ If the callbacks return a promise with result equal a false the change of state 
     }
   </script>
 </body>
+
+</html>
 ```
 
 ![Built With Stencil](https://img.shields.io/badge/-Built%20With%20Stencil-16161d.svg?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjIuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI%2BCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI%2BCgkuc3Qwe2ZpbGw6I0ZGRkZGRjt9Cjwvc3R5bGU%2BCjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00MjQuNywzNzMuOWMwLDM3LjYtNTUuMSw2OC42LTkyLjcsNjguNkgxODAuNGMtMzcuOSwwLTkyLjctMzAuNy05Mi43LTY4LjZ2LTMuNmgzMzYuOVYzNzMuOXoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTQyNC43LDI5Mi4xSDE4MC40Yy0zNy42LDAtOTIuNy0zMS05Mi43LTY4LjZ2LTMuNkgzMzJjMzcuNiwwLDkyLjcsMzEsOTIuNyw2OC42VjI5Mi4xeiIvPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNNDI0LjcsMTQxLjdIODcuN3YtMy42YzAtMzcuNiw1NC44LTY4LjYsOTIuNy02OC42SDMzMmMzNy45LDAsOTIuNywzMC43LDkyLjcsNjguNlYxNDEuN3oiLz4KPC9zdmc%2BCg%3D%3D&colorA=16161d&style=flat-square)
