@@ -207,6 +207,29 @@
       display: block;
       left: calc(calc(100% / 2) - 40px);
     }
+
+    zt-bottom-drawer {
+      --ion-background-color: #383434cc;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    zt-bottom-drawer [slot="border"]  {
+      width: 100%;
+      height: 10px;
+      border:none;
+      border-top-color: #424040e7;
+      border-top-right-radius:8px;
+      border-top-left-radius:8px;
+      background-color: #383434cc;
+      border-top-style: solid;
+      border-width: 1px;
+      border-bottom-right-radius:0px;
+      border-bottom-left-radius:0px;
+      margin-left: 0px;
+      -webkit-box-shadow: 0px -3px 7px 0px #383434e7;
+      box-shadow: 0px -3px 7px 0px #383434e7;
+    }
   </style>
 </head>
 </head>
@@ -217,8 +240,10 @@
     <div></div>
   </div>
   <zt-bottom-drawer id="drawer" distance-bottom-close="210" distance-top-full-open="50">
-    <div slot="drawer-content">
-      <ion-content class="drawer-content">
+    <div slot="border">
+    </div>
+    <div slot="content">
+      <ion-content>
         <ion-card class="card-close">
           <ion-card-header>
             <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
