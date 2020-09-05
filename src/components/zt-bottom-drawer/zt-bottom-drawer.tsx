@@ -63,27 +63,11 @@ export class ZTBottomDrawer {
         this._state = this.state;
         let dimensionesWin = this.getWHWindow();
 
-        this.drawerContent = this.el.querySelector(".drawer-content");
-
-        this.gestureElement = document.createElement("div");
-
-        this.gestureElement.style.setProperty("width", " calc(100% - 0px)");
-        this.gestureElement.style.setProperty("height", "10px");
-        this.gestureElement.style.setProperty("border", "none");
-        this.gestureElement.style.setProperty("border-top", "white");
-        this.gestureElement.style.setProperty("border-top-style", "solid");
-        this.gestureElement.style.setProperty("border-width", " 3px");
-        this.gestureElement.style.setProperty("border-radius", " 10px");
-        this.gestureElement.style.setProperty("margin-left", " 0px");
-        this.gestureElement.style.setProperty("margin-right", " 0px");
-
-        this.gestureElement.style.setProperty("-webkit-box-shadow", "0px -3px 7px 0px rgba(255,255,255,0.24)");
-        this.gestureElement.style.setProperty("box-shadow", "0px -3px 7px 0px rgba(255,255,255,0.24)");
-
-        this.insertBefore(this.el.shadowRoot.firstElementChild, this.gestureElement)
+        this.drawerContent = this.el.querySelector('[slot="content"]');
+        this.gestureElement = this.el.querySelector('[slot="border"]');
 
         if (this.drawerContent && this.autoHeightContent) {
-            this.drawerContent.style.setProperty("height", this.distanceBottomOpen + "px");
+            this.drawerContent.style.setProperty("height", dimensionesWin.height + "px");
         }
 
         this.animation = createAnimation()
@@ -338,7 +322,8 @@ export class ZTBottomDrawer {
 
     render() {
         return (<Host>
-            <slot name="drawer-content" />
+            <slot name="border" />
+            <slot name="content" />
         </Host>);
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "@zoff-tech/zt-bottom-drawer",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Bottom Drawer / Web Component",
   "main": "dist/index.cjs.js",
   "module": "dist/custom-elements/index.js",
@@ -15,7 +15,7 @@
     "loader/"
   ],
   "scripts": {
-    "build-docs":"stencil build --docs-readme",
+    "build-docs": "stencil build --docs-readme",
     "build": "stencil build --docs",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
