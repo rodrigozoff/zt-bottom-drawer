@@ -11,7 +11,7 @@
 | -------------------- | ----------------------- | ----------- | --------- | ------------------------------------------------- |
 | `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
 | `autoShowOnLoad`     | `auto-show-on-load`     |             | `boolean` | `true`                                            |
-| `coefDuration`       | `coef-duration`         |100px => 100 MSec  | `number`  | `100`                                             |
+| `coefDuration`       | `coef-duration`         |             | `number`  | `250`                                             |
 | `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
 | `easing`             | `easing`                |             | `string`  | `'cubic-bezier(.56,.05,.91,.88)'`                 |
 | `hidden`             | `hidden`                |             | `boolean` | `false`                                           |

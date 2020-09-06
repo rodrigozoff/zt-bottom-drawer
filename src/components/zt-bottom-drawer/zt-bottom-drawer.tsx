@@ -28,7 +28,7 @@ export class ZTBottomDrawer {
     @Prop({ mutable: true, reflect: true }) hideOnPositionZero: boolean = false;
 
     @Prop({ mutable: true, reflect: true }) hidden: boolean = false;
-    @Prop({ mutable: true, reflect: true }) coefDuration: number = 100;
+    @Prop({ mutable: true, reflect: true }) coefDuration: number = 250;
 
 
     @Prop({ reflect: true }) positions: string = "close-b-10,bottom-b-200,middle-b-450,top-t-60";
@@ -100,7 +100,7 @@ export class ZTBottomDrawer {
                 gestureName: 'drawer-drag',
                 disableScroll: true,
                 passive: false,
-                onStart:()=>this.onStart(),
+                onStart: () => this.onStart(),
                 onMove: ev => this.onMove(ev),
                 onEnd: ev => this.onEnd(ev)
             });
@@ -177,6 +177,7 @@ export class ZTBottomDrawer {
     async hide(notAnimate: boolean | undefined = false) {
         this.gesture.enable(false);
         this.hidden = true;
+
         let dimensionesWin = this.getWHWindow();
 
         let animation = createAnimation()
@@ -227,6 +228,7 @@ export class ZTBottomDrawer {
             this._position = positionToShow;
             this.positionName = positionToShow.name;
             this.setDisableGesture(this.disableGesture);
+            this.setHeightContent();
         });
     }
 
@@ -267,6 +269,7 @@ export class ZTBottomDrawer {
 
     onStart() {
         this.ultimoTranslateRechazado = null;
+        this.isSetMaxHeightContent = false;
     }
 
     onMove(ev: GestureDetail) {
@@ -284,14 +287,16 @@ export class ZTBottomDrawer {
         else
             return "DOWN"
     }
- 
+
     async changeStateByGesture(ev: GestureDetail) {
         if (Math.abs(ev.deltaY) == 0) {
             let posY: number = this._position.distanceToTop;
             await this.setTranslateY(posY);
             return;
         }
-        this.gesture.enable(false);
+
+        if (this.gesture)
+            this.gesture.enable(false);
 
         let calculatePosition: ZTPositionDrawer = this._position;
 
@@ -335,7 +340,7 @@ export class ZTBottomDrawer {
         if (newValue && this._position && this._position.name !== newValue) {
             newValue = (newValue as string).toLowerCase();
             let newPosition = await this.getPositionByName(newValue);
-            if (newPosition && this._position.name !== newPosition.name){
+            if (newPosition && this._position.name !== newPosition.name) {
                 this.ultimoTranslateRechazado = null;
                 return await this.setPosition(newPosition);
             }
@@ -347,6 +352,8 @@ export class ZTBottomDrawer {
 
     async setPosition(value: ZTPositionDrawer): Promise<void> {
         this.ultimoTranslateRechazado = null;
+        if (this.gesture)
+            this.gesture.enable(false);
 
         if (value.name !== this._position.name) {
             if (this.callbackCanDeactivateState) {
@@ -367,33 +374,26 @@ export class ZTBottomDrawer {
             this.positionName = this._position.name;
             this.changePositionEvent.emit({ positionName: this.positionName, htmlElements: this._htmlElements });
         }
-
+        this.isSetMaxHeightContent = false;
         await this.setTranslateY(value.distanceToTop);
+        this.setHeightContent();
+        this.setDisableGesture(this.disableGesture);
     }
 
     enMovimiento: boolean = false;
     ultimoTranslateRechazado: { posY: number } | undefined = undefined;
     ultimoValue: number = 0;
 
-    getOffset(el: any): { top: number, left: number } {
-        var _x = 0;
-        var _y = 0;
-        while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-            _x += el.offsetLeft - el.scrollLeft;
-            _y += el.offsetTop - el.scrollTop;
-            el = el.offsetParent;
-        }
-        return { top: _y, left: _x };
-    }
 
     getDuration(posY, el) {
         let offset = el.getBoundingClientRect();
         let delta = Math.abs(posY - offset.top)
         let duration = (delta / 100) * this.coefDuration;
-        console.log(`PosY:${posY} Delta:${delta} Duration:${duration}`);
+        //console.log(`PosY:${posY} Delta:${delta} Duration:${duration}`);
         return duration;
     }
 
+    isSetMaxHeightContent: boolean = false;
     async setTranslateY(posY: number, forceAnimate: boolean = false): Promise<void> {
         return new Promise(async (resolve) => {
 
@@ -408,14 +408,15 @@ export class ZTBottomDrawer {
 
             this.enMovimiento = true;
 
-            if (this._htmlElements.slotContent && this.ultimoValue > posY) {
+            if (!this.isSetMaxHeightContent) {
+                this.isSetMaxHeightContent = true;
                 this._htmlElements.slotContent.style.setProperty("height", (this.getWHWindow().height).toString() + "px");
             }
-
+            let duration = this.getDuration(posY, this.el)
             let animation = createAnimation()
                 .addElement(this.el)
                 .duration(this.getDuration(posY, this.el))
-                .easing(this.easing)
+                .easing(duration < 700 ? "cubic-bezier(.58,.61,.79,.8)" : this.easing)
                 .to('transform', `translateY(${posY}px)`);
 
             this.ultimoValue = posY;
@@ -430,14 +431,18 @@ export class ZTBottomDrawer {
                         resolve();
                     });
                 } else {
-                    if (this._htmlElements.slotContent && this.autoHeightContent) {
-                        this._htmlElements.slotContent.style.setProperty("height", (this.getWHWindow().height - Number(this._htmlElements.slotContent.getBoundingClientRect().top)).toString() + "px");
-                    }
                     this.enMovimiento = false;
                     resolve()
                 }
             });
         });
+    }
+
+
+    setHeightContent() {
+        if (this._htmlElements.slotContent && this.autoHeightContent) {
+            this._htmlElements.slotContent.style.setProperty("height", (this.getWHWindow().height - Number(this._htmlElements.slotContent.getBoundingClientRect().top)).toString() + "px");
+        }
     }
 
     render() {
