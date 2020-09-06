@@ -2,7 +2,7 @@
 
 Bottom Drawer WebComponent / StencilJS / Ionic 5 
 
-![alt text](./demo.gif "Demo")
+![alt text](./demo.gif "Demo") | ![alt text](./demo-app-mapa.gif "Demo")
 
 # Installation
 
