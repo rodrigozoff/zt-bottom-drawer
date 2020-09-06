@@ -67,15 +67,13 @@ export class ZTBottomDrawer {
 
     async componentDidLoad() {
         this._htmlElements = { drawer: null, slotBorder: null, slotContent: null };
-
-        let dimensionesWin = this.getWHWindow();
-
+        this._htmlElements.drawer = this.el;
         this._htmlElements.slotContent = this.el.querySelector('[slot="content"]');
         this._htmlElements.slotBorder = this.el.querySelector('[slot="border"]');
 
-        if (this._htmlElements.slotContent && this.autoHeightContent) {
-            this._htmlElements.slotContent.style.setProperty("height", dimensionesWin.height + "px");
-        }
+        this.el.style.setProperty("height", this.getWHWindow().height + "px");
+
+        this.setHeightContent("MAX");
 
         this.setPositions(this.positions);
 
@@ -207,9 +205,7 @@ export class ZTBottomDrawer {
 
         let dimensionesWin = this.getWHWindow();
 
-        if (this._htmlElements.slotContent && this.autoHeightContent) {
-            this._htmlElements.slotContent.style.setProperty("height", dimensionesWin.height + "px");
-        }
+        this.setHeightContent("MAX");
 
         if (this.gesture) {
             this.gesture.enable(false);
@@ -228,7 +224,7 @@ export class ZTBottomDrawer {
             this._position = positionToShow;
             this.positionName = positionToShow.name;
             this.setDisableGesture(this.disableGesture);
-            this.setHeightContent();
+            this.setHeightContent("CONTENT");
         });
     }
 
@@ -267,9 +263,10 @@ export class ZTBottomDrawer {
         }
     }
 
+    enTouchMove: Boolean = false;
     onStart() {
-        this.ultimoTranslateRechazado = null;
-        this.isSetMaxHeightContent = false;
+        this.ultimoTranslateRechazado = undefined;
+        this.setHeightContent("MAX");
     }
 
     onMove(ev: GestureDetail) {
@@ -277,7 +274,6 @@ export class ZTBottomDrawer {
     }
 
     onEnd(ev: GestureDetail) {
-        this.ultimoTranslateRechazado = null;
         this.changeStateByGesture(ev);
     }
 
@@ -292,6 +288,7 @@ export class ZTBottomDrawer {
         if (Math.abs(ev.deltaY) == 0) {
             let posY: number = this._position.distanceToTop;
             await this.setTranslateY(posY);
+            this.setHeightContent("CONTENT");
             return;
         }
 
@@ -305,7 +302,6 @@ export class ZTBottomDrawer {
         if (result.close) {
             if (this.hideOnPositionZero) {
                 this.hideEvent.emit();
-                this.setDisableGesture(this.disableGesture);
                 return this.hide();
             }
         }
@@ -316,11 +312,11 @@ export class ZTBottomDrawer {
 
         if (calculatePosition != this._position) {
             await this.setPosition(calculatePosition);
-            this.setDisableGesture(this.disableGesture);
             return;
         }
 
-        await this.setTranslateY(this._position.distanceToTop);
+        await this.setTranslateY(this._position.distanceToTop,true);
+        this.setHeightContent("CONTENT");
         this.setDisableGesture(this.disableGesture);
     }
 
@@ -374,11 +370,17 @@ export class ZTBottomDrawer {
             this.positionName = this._position.name;
             this.changePositionEvent.emit({ positionName: this.positionName, htmlElements: this._htmlElements });
         }
-        this.isSetMaxHeightContent = false;
-        await this.setTranslateY(value.distanceToTop);
-        this.setHeightContent();
+
+        this.ultimoTranslateRechazado = undefined;
+        this.setHeightContent("MAX");
+        await this.setTranslateY(value.distanceToTop, true);
+        this.setHeightContent("CONTENT");
         this.setDisableGesture(this.disableGesture);
     }
+
+    disableSetContentHeight: boolean = false;
+
+    isChangingPosition: Boolean = false;
 
     enMovimiento: boolean = false;
     ultimoTranslateRechazado: { posY: number } | undefined = undefined;
@@ -393,13 +395,17 @@ export class ZTBottomDrawer {
         return duration;
     }
 
-    isSetMaxHeightContent: boolean = false;
     async setTranslateY(posY: number, forceAnimate: boolean = false): Promise<void> {
         return new Promise(async (resolve) => {
 
             if (this.enMovimiento && !forceAnimate) {
-                this.ultimoTranslateRechazado = { posY: posY };
+                if (this.ultimoValue === posY)
+                    this.ultimoTranslateRechazado = { posY: posY };
                 return resolve();
+            }
+
+            if(forceAnimate){
+                this.ultimoTranslateRechazado=undefined;
             }
 
             if (this.ultimoValue === posY) {
@@ -408,10 +414,6 @@ export class ZTBottomDrawer {
 
             this.enMovimiento = true;
 
-            if (!this.isSetMaxHeightContent) {
-                this.isSetMaxHeightContent = true;
-                this._htmlElements.slotContent.style.setProperty("height", (this.getWHWindow().height).toString() + "px");
-            }
             let duration = this.getDuration(posY, this.el)
             let animation = createAnimation()
                 .addElement(this.el)
@@ -420,6 +422,8 @@ export class ZTBottomDrawer {
                 .to('transform', `translateY(${posY}px)`);
 
             this.ultimoValue = posY;
+
+            //this.setHeightContent("MAX");
 
             animation.play().then(async () => {
                 if (this.ultimoTranslateRechazado) {
@@ -434,14 +438,38 @@ export class ZTBottomDrawer {
                     this.enMovimiento = false;
                     resolve()
                 }
-            });
+            }).catch(err => console.error(err));
         });
     }
 
+    lastHeightContent: number = 0;
+    setHeightContent(heightOf: "CONTENT" | "MAX") {
+        let value: number = 0;
 
-    setHeightContent() {
-        if (this._htmlElements.slotContent && this.autoHeightContent) {
-            this._htmlElements.slotContent.style.setProperty("height", (this.getWHWindow().height - Number(this._htmlElements.slotContent.getBoundingClientRect().top)).toString() + "px");
+        console.log(`setHeightContent ${heightOf}`);
+
+        if (heightOf == "CONTENT") {
+            console.log(heightOf);
+            let topSlotContent = this._htmlElements.slotContent.getBoundingClientRect().top;
+            console.log(topSlotContent);
+            if (this.getWHWindow().height > topSlotContent) {
+                value = this.getWHWindow().height - topSlotContent;
+            } else {
+                value = this.getWHWindow().height;
+            }
+            value = Math.abs(value);
+        }
+
+        if (heightOf == "MAX") {
+            console.log(heightOf);
+            value = this.getWHWindow().height;
+            value = Math.abs(value);
+        }
+
+        if (this.lastHeightContent < value || (heightOf === "CONTENT" && this.lastHeightContent !== value)) {
+            console.log(`setProperty("height", ${value} + "px")`);
+            this._htmlElements.slotContent.style.setProperty("height", value + "px");
+            this.lastHeightContent = value;
         }
     }
 
