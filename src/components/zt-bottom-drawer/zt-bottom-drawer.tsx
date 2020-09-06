@@ -25,9 +25,11 @@ export class ZTBottomDrawer {
 
     @Prop({ reflect: true }) positionName: string;
 
-    @Prop() hideOnPositionZero: boolean = true;
+    @Prop({ mutable: true, reflect: true }) hideOnPositionZero: boolean = false;
 
     @Prop({ mutable: true, reflect: true }) hidden: boolean = false;
+    @Prop({ mutable: true, reflect: true }) coefDuration: number = 100;
+
 
     @Prop({ reflect: true }) positions: string = "close-b-10,bottom-b-200,middle-b-450,top-t-60";
 
@@ -98,6 +100,7 @@ export class ZTBottomDrawer {
                 gestureName: 'drawer-drag',
                 disableScroll: true,
                 passive: false,
+                onStart:()=>this.onStart(),
                 onMove: ev => this.onMove(ev),
                 onEnd: ev => this.onEnd(ev)
             });
@@ -262,8 +265,12 @@ export class ZTBottomDrawer {
         }
     }
 
+    onStart() {
+        this.ultimoTranslateRechazado = null;
+    }
+
     onMove(ev: GestureDetail) {
-        this.setTranslateY(ev.currentY, 0);
+        this.setTranslateY(ev.currentY);
     }
 
     onEnd(ev: GestureDetail) {
@@ -277,16 +284,14 @@ export class ZTBottomDrawer {
         else
             return "DOWN"
     }
-
+ 
     async changeStateByGesture(ev: GestureDetail) {
         if (Math.abs(ev.deltaY) == 0) {
             let posY: number = this._position.distanceToTop;
-            await this.setTranslateY(posY, 0);
+            await this.setTranslateY(posY);
             return;
         }
-
-        if (this.gesture)
-            this.gesture.enable(false);
+        this.gesture.enable(false);
 
         let calculatePosition: ZTPositionDrawer = this._position;
 
@@ -294,8 +299,8 @@ export class ZTBottomDrawer {
 
         if (result.close) {
             if (this.hideOnPositionZero) {
-                this.setDisableGesture(this.disableGesture);
                 this.hideEvent.emit();
+                this.setDisableGesture(this.disableGesture);
                 return this.hide();
             }
         }
@@ -330,8 +335,10 @@ export class ZTBottomDrawer {
         if (newValue && this._position && this._position.name !== newValue) {
             newValue = (newValue as string).toLowerCase();
             let newPosition = await this.getPositionByName(newValue);
-            if (newPosition && this._position.name !== newPosition.name)
+            if (newPosition && this._position.name !== newPosition.name){
+                this.ultimoTranslateRechazado = null;
                 return await this.setPosition(newPosition);
+            }
         }
         setTimeout(() => {
             this.positionName = this._position ? this._position.name : null;
@@ -339,8 +346,7 @@ export class ZTBottomDrawer {
     }
 
     async setPosition(value: ZTPositionDrawer): Promise<void> {
-        if (this.gesture)
-            this.gesture.enable(false);
+        this.ultimoTranslateRechazado = null;
 
         if (value.name !== this._position.name) {
             if (this.callbackCanDeactivateState) {
@@ -362,19 +368,37 @@ export class ZTBottomDrawer {
             this.changePositionEvent.emit({ positionName: this.positionName, htmlElements: this._htmlElements });
         }
 
-        this.ultimoTranslateRechazado = null;
         await this.setTranslateY(value.distanceToTop);
-        this.setDisableGesture(this.disableGesture);
     }
 
     enMovimiento: boolean = false;
-    ultimoTranslateRechazado: { posY: number, duration: number } | undefined = undefined;
+    ultimoTranslateRechazado: { posY: number } | undefined = undefined;
     ultimoValue: number = 0;
 
-    async setTranslateY(posY: number, duration: number = 200): Promise<void> {
+    getOffset(el: any): { top: number, left: number } {
+        var _x = 0;
+        var _y = 0;
+        while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+            _x += el.offsetLeft - el.scrollLeft;
+            _y += el.offsetTop - el.scrollTop;
+            el = el.offsetParent;
+        }
+        return { top: _y, left: _x };
+    }
+
+    getDuration(posY, el) {
+        let offset = el.getBoundingClientRect();
+        let delta = Math.abs(posY - offset.top)
+        let duration = (delta / 100) * this.coefDuration;
+        console.log(`PosY:${posY} Delta:${delta} Duration:${duration}`);
+        return duration;
+    }
+
+    async setTranslateY(posY: number, forceAnimate: boolean = false): Promise<void> {
         return new Promise(async (resolve) => {
-            if (this.enMovimiento) {
-                this.ultimoTranslateRechazado = { posY: posY, duration: duration };
+
+            if (this.enMovimiento && !forceAnimate) {
+                this.ultimoTranslateRechazado = { posY: posY };
                 return resolve();
             }
 
@@ -390,22 +414,26 @@ export class ZTBottomDrawer {
 
             let animation = createAnimation()
                 .addElement(this.el)
-                .duration(duration)
+                .duration(this.getDuration(posY, this.el))
                 .easing(this.easing)
                 .to('transform', `translateY(${posY}px)`);
 
             this.ultimoValue = posY;
 
             animation.play().then(async () => {
-                this.enMovimiento = false;
                 if (this.ultimoTranslateRechazado) {
                     let ultimoTranslate = this.ultimoTranslateRechazado;
                     this.ultimoTranslateRechazado = undefined;
-                    this.setTranslateY(ultimoTranslate.posY, ultimoTranslate.duration).then(() => resolve());
+                    console.log("ultimoTranslateRechazado ", ultimoTranslate);
+                    this.setTranslateY(ultimoTranslate.posY, true).then(() => {
+                        this.enMovimiento = false;
+                        resolve();
+                    });
                 } else {
                     if (this._htmlElements.slotContent && this.autoHeightContent) {
                         this._htmlElements.slotContent.style.setProperty("height", (this.getWHWindow().height - Number(this._htmlElements.slotContent.getBoundingClientRect().top)).toString() + "px");
                     }
+                    this.enMovimiento = false;
                     resolve()
                 }
             });

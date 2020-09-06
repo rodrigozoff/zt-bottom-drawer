@@ -12,6 +12,7 @@ export namespace Components {
         "addCallbackCanDeactivateState": (callback: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>;
         "autoHeightContent": boolean;
         "autoShowOnLoad": boolean;
+        "coefDuration": number;
         "disableGesture": boolean;
         "easing": string;
         "getPositionByIndex": (index: number) => Promise<ZTPositionDrawer>;
@@ -39,6 +40,7 @@ declare namespace LocalJSX {
     interface ZtBottomDrawer {
         "autoHeightContent"?: boolean;
         "autoShowOnLoad"?: boolean;
+        "coefDuration"?: number;
         "disableGesture"?: boolean;
         "easing"?: string;
         "hidden"?: boolean;

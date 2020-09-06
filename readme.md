@@ -11,16 +11,19 @@ $ npm i @zoff-tech/zt-bottom-drawer
 ```
 
 
+
+
 ## Properties
 
 | Property             | Attribute               | Description | Type      | Default                                           |
 | -------------------- | ----------------------- | ----------- | --------- | ------------------------------------------------- |
 | `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
 | `autoShowOnLoad`     | `auto-show-on-load`     |             | `boolean` | `true`                                            |
+| `coefDuration`       | `coef-duration`         |100px => 100 MSec  | `number`  | `100`                                             |
 | `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
 | `easing`             | `easing`                |             | `string`  | `'cubic-bezier(.56,.05,.91,.88)'`                 |
 | `hidden`             | `hidden`                |             | `boolean` | `false`                                           |
-| `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `true`                                            |
+| `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `false`                                           |
 | `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
 | `positions`          | `positions`             |             | `string`  | `"close-b-10,bottom-b-200,middle-b-450,top-t-60"` |
 
