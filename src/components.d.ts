@@ -23,6 +23,7 @@ export namespace Components {
         "positionName": string;
         "positions": string;
         "show": (positionName: string, notAnimate?: boolean | undefined) => Promise<void>;
+        "targetGestureSelector": string;
     }
 }
 declare global {
@@ -49,6 +50,7 @@ declare namespace LocalJSX {
         "onHideEvent"?: (event: CustomEvent<ZTHTMLElementsDrawer>) => void;
         "positionName"?: string;
         "positions"?: string;
+        "targetGestureSelector"?: string;
     }
     interface IntrinsicElements {
         "zt-bottom-drawer": ZtBottomDrawer;

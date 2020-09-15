@@ -240,43 +240,71 @@
     <div></div>
   </div>
   <zt-bottom-drawer id="drawer" hide-on-position-zero=true position-name="bottom"
-    positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
-    <div slot="border">
-    </div>
+    target-gesture-selector=".gesture-target" positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
     <div slot="content">
-        <ion-content>
-          <ion-card class="card-close">
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-        </ion-content>
-      </div>
+      <ion-content class="gesture-target">
+        <ion-card class="card-close">
+          <ion-card-header>
+            <ion-card-subtitle>Card Subtitle v1</ion-card-subtitle>
+            <ion-card-title>Card Title</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Keep close to Nature's heart... and break clear away, once in awhile,
+            and climb a mountain or spend a week in the woods. Wash your spirit clean.
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            <ion-card-title>Card Title</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Keep close to Nature's heart... and break clear away, once in awhile,
+            and climb a mountain or spend a week in the woods. Wash your spirit clean.
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            <ion-card-title>Card Title</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Keep close to Nature's heart... and break clear away, once in awhile,
+            and climb a mountain or spend a week in the woods. Wash your spirit clean.
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            <ion-card-title>Card Title</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Keep close to Nature's heart... and break clear away, once in awhile,
+            and climb a mountain or spend a week in the woods. Wash your spirit clean.
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            <ion-card-title>Card Title</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Keep close to Nature's heart... and break clear away, once in awhile,
+            and climb a mountain or spend a week in the woods. Wash your spirit clean.
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            <ion-card-title>Card Title</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Keep close to Nature's heart... and break clear away, once in awhile,
+            and climb a mountain or spend a week in the woods. Wash your spirit clean.
+          </ion-card-content>
+        </ion-card>
+      </ion-content>
+    </div>
   </zt-bottom-drawer>
   <script>
     window.onload = () => {
@@ -304,8 +332,9 @@
               document.getElementById("loader").classList.remove("lds-ripple");
               let resultRandom = Math.random();
               console.log(resultRandom > 0.5 ? "Can Activate" : "Can't Activate");
-              resolve(resultRandom > 0.5 ? true : false);
-            }, 1000 * (Math.random() * (8 - 4) + 4));
+            //  resolve(resultRandom > 0.5 ? true : false);
+            resolve(true);
+            }, 1000 * (Math.random() * (3 - 1) +1));
           });
         }
         return true;
