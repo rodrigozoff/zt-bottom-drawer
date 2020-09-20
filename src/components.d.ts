@@ -13,8 +13,10 @@ export namespace Components {
         "autoHeightContent": boolean;
         "autoShowOnLoad": boolean;
         "coefDuration": number;
+        "contentSelector": string;
         "disableGesture": boolean;
         "easing": string;
+        "gestureSelector": string;
         "getPositionByIndex": (index: number) => Promise<ZTPositionDrawer>;
         "getPositionByName": (name: string) => Promise<ZTPositionDrawer>;
         "hidden": boolean;
@@ -23,7 +25,6 @@ export namespace Components {
         "positionName": string;
         "positions": string;
         "show": (positionName: string, notAnimate?: boolean | undefined) => Promise<void>;
-        "targetGestureSelector": string;
     }
 }
 declare global {
@@ -42,15 +43,16 @@ declare namespace LocalJSX {
         "autoHeightContent"?: boolean;
         "autoShowOnLoad"?: boolean;
         "coefDuration"?: number;
+        "contentSelector"?: string;
         "disableGesture"?: boolean;
         "easing"?: string;
+        "gestureSelector"?: string;
         "hidden"?: boolean;
         "hideOnPositionZero"?: boolean;
         "onChangePositionEvent"?: (event: CustomEvent<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
         "onHideEvent"?: (event: CustomEvent<ZTHTMLElementsDrawer>) => void;
         "positionName"?: string;
         "positions"?: string;
-        "targetGestureSelector"?: string;
     }
     interface IntrinsicElements {
         "zt-bottom-drawer": ZtBottomDrawer;

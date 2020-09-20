@@ -2,7 +2,7 @@ import { h, Prop, Watch, Host, Element, Component, Event, EventEmitter, Method }
 import { createGesture, createAnimation, Gesture, Animation, GestureDetail } from '@ionic/core';
 
 export type ZTPositionDrawer = { index: number, name: string, distanceTo: "BOTTOM" | "TOP", distance: number, distanceToTop: number, distanceMaginBottom: number, distanceMarginTop: number, previousPosition: ZTPositionDrawer, nextPosition: ZTPositionDrawer };
-export type ZTHTMLElementsDrawer = { drawer: HTMLElement, gestureTarget: HTMLElement, slotContent: HTMLElement };
+export type ZTHTMLElementsDrawer = { drawer: HTMLElement, slot: HTMLSlotElement, gestureTarget: HTMLElement, content: HTMLElement };
 
 type ResultgetPositionByPosY = { newPosition: ZTPositionDrawer, close: boolean };
 
@@ -18,7 +18,8 @@ export class ZTBottomDrawer {
     gesture?: Gesture;
 
     @Prop({ reflect: true }) disableGesture: boolean = false;
-    @Prop() targetGestureSelector: string = null;
+    @Prop() gestureSelector: string = '[slot="content"]';
+    @Prop() contentSelector: string = '[slot="content"]';
 
     @Prop() autoShowOnLoad: boolean = true;
 
@@ -64,17 +65,31 @@ export class ZTBottomDrawer {
     insertBefore(referenceNode, newNode) {
         referenceNode.parentNode.insertBefore(newNode, referenceNode);
     }
+    
+    ionContent: HTMLIonContentElement;
+    ionContentNotTopScroll: Boolean = true;
 
     async componentDidLoad() {
-        this._htmlElements = { drawer: null, gestureTarget: null, slotContent: null };
+        this._htmlElements = { drawer: null, gestureTarget: null, content: null, slot: null };
         this._htmlElements.drawer = this.el;
-        this._htmlElements.slotContent = this.el.querySelector('[slot="content"]');
 
-        if (this.targetGestureSelector) {
-            this._htmlElements.gestureTarget = this._htmlElements.slotContent.querySelector(this.targetGestureSelector);
+        this._htmlElements.slot = this.el.querySelector('[slot="content"]');
+        this._htmlElements.content = this._htmlElements.slot.querySelector(this.contentSelector);
+     
+        if (this.gestureSelector) {
+            this._htmlElements.gestureTarget = this._htmlElements.slot.querySelector(this.gestureSelector);
         }
+
         if (!this._htmlElements.gestureTarget) {
-            this._htmlElements.gestureTarget = this._htmlElements.slotContent;
+            this._htmlElements.gestureTarget = this._htmlElements.content;
+        }
+
+        if (this._htmlElements.content.nodeName == "ION-CONTENT" && this.autoHeightContent) {
+            this.ionContent = this._htmlElements.content as HTMLIonContentElement;
+            this.ionContent.scrollEvents = true;
+            this.ionContent.addEventListener("ionScroll", (ev: any) => {
+                this.ionContentNotTopScroll = ev && ev.detail && ev.detail.scrollTop !== 0;
+            });
         }
 
         this.el.style.setProperty("height", this.getWHWindow().height + "px");
@@ -105,7 +120,7 @@ export class ZTBottomDrawer {
                 disableScroll: true,
                 passive: true,
                 direction: "y",
-                onStart: () => this.onStart(),
+                onStart: ev => this.onStart(ev),
                 onMove: ev => this.onMove(ev),
                 onEnd: ev => this.onEnd(ev)
             });
@@ -271,31 +286,53 @@ export class ZTBottomDrawer {
         return result;
     }
 
-    log(parametro) {
-        if ((window.console as any).__ztbottomdrawer) {
-            console.log(parametro);
-        }
-    }
+
 
     startPosTopMove: number;
     enTouchMove: Boolean = false;
-    onStart() {
+
+    cancelMove: Boolean = false;
+
+    onStart(ev: GestureDetail) {
+        if ((window as any).stopOnTouch){
+            debugger;
+        }
+       
+
+        if ((ev.event as any).path) {
+            let elementos: HTMLElement[] = (ev.event as any).path;
+            let eleContent = elementos.find((el) => {
+                return el === this._htmlElements.content;
+            });
+            if (eleContent && this.ionContentNotTopScroll) {
+                this.cancelMove = true;
+                return;
+            }
+        }
+
+        this.cancelMove = false;
         this.ultimoTranslateRechazado = undefined;
         if (this._position.nextPosition)
             this.setHeightContent("MAX");
+
         this.startPosTopMove = this._htmlElements.drawer.getBoundingClientRect().top;
+        console.log("Start", ev);
     }
 
     onMove(ev: GestureDetail) {
-        //  this.el.style.setProperty("transitions",`transform 0s linear;`);
-        //  this.el.style.setProperty("transform",`translateY(${ev.currentY}px)`);
+        if (this.cancelMove)
+            return;
         let calc = this.startPosTopMove + ev.deltaY;
-        // console.log(`${this.startPosTopMove} + ${ev.deltaY} = ${calc}`);
+        //console.log("Move", ev);
+        //console.log(`${this.startPosTopMove} + ${ev.deltaY} = ${calc}`);
         if (calc >= this.maxTop)
             this.setTranslateY(calc);
     }
 
     onEnd(ev: GestureDetail) {
+        if (this.cancelMove)
+            return;
+        //console.log("MovEnd", ev);
         this.gesture.enable(false);
         this.changeStateByGesture(ev);
         this.startPosTopMove = 0;
@@ -474,13 +511,13 @@ export class ZTBottomDrawer {
     lastHeightContent: number = 0;
     setHeightContent(heightOf: "CONTENT" | "MAX") {
         let value: number = 0;
-        console.log(`setHeightContent ${heightOf}`);
+        //console.log(`setHeightContent ${heightOf}`);
         if (heightOf == "CONTENT") {
-            console.log(heightOf);
-            let topSlotContent = this._htmlElements.slotContent.getBoundingClientRect().top;
-            //console.log(topSlotContent);
-            if (this.getWHWindow().height > topSlotContent) {
-                value = this.getWHWindow().height - topSlotContent;
+            //console.log(heightOf);
+            let topcontent = this._htmlElements.content.getBoundingClientRect().top;
+            //console.log(topcontent);
+            if (this.getWHWindow().height > topcontent) {
+                value = this.getWHWindow().height - topcontent;
             } else {
                 value = this.getWHWindow().height;
             }
@@ -492,14 +529,14 @@ export class ZTBottomDrawer {
             //  value = this.getWHWindow().height;
             // value = Math.abs(value);
             value = 10000;
-            this._htmlElements.slotContent.style.setProperty("height", value + "px");
+            this._htmlElements.content.style.setProperty("height", value + "px");
             this.lastHeightContent = value;
             return;
         }
 
         if (this.lastHeightContent < value || (heightOf === "CONTENT" && this.lastHeightContent !== value)) {
             //console.log(`setProperty("height", ${value} + "px")`);
-            this._htmlElements.slotContent.style.setProperty("height", value + "px");
+            this._htmlElements.content.style.setProperty("height", value + "px");
             this.lastHeightContent = value;
         }
     }

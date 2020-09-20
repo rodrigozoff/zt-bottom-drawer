@@ -9,30 +9,29 @@ Bottom Drawer WebComponent / StencilJS / Ionic 5
 ```
 $ npm i @zoff-tech/zt-bottom-drawer
 ```
-
-
 ## Properties
 
-| Property                | Attribute                 | Description | Type      | Default                                           |
-| ----------------------- | ------------------------- | ----------- | --------- | ------------------------------------------------- |
-| `autoHeightContent`     | `auto-height-content`     |             | `boolean` | `true`                                            |
-| `autoShowOnLoad`        | `auto-show-on-load`       |             | `boolean` | `true`                                            |
-| `coefDuration`          | `coef-duration`           |             | `number`  | `150`                                             |
-| `disableGesture`        | `disable-gesture`         |             | `boolean` | `false`                                           |
-| `easing`                | `easing`                  |             | `string`  | `'cubic-bezier(.56,.05,.91,.88)'`                 |
-| `hidden`                | `hidden`                  |             | `boolean` | `false`                                           |
-| `hideOnPositionZero`    | `hide-on-position-zero`   |             | `boolean` | `false`                                           |
-| `positionName`          | `position-name`           |             | `string`  | `undefined`                                       |
-| `positions`             | `positions`               |             | `string`  | `"close-b-10,bottom-b-200,middle-b-450,top-t-60"` |
-| `targetGestureSelector` | `target-gesture-selector` |             | `string`  | `null`                                            |
+| Property             | Attribute               | Description | Type      | Default                                           |
+| -------------------- | ----------------------- | ----------- | --------- | ------------------------------------------------- |
+| `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
+| `autoShowOnLoad`     | `auto-show-on-load`     |             | `boolean` | `true`                                            |
+| `coefDuration`       | `coef-duration`         |             | `number`  | `150`                                             |
+| `contentSelector`    | `content-selector`      |             | `string`  | `'[slot="content"]'`                              |
+| `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
+| `easing`             | `easing`                |             | `string`  | `'cubic-bezier(.56,.05,.91,.88)'`                 |
+| `gestureSelector`    | `gesture-selector`      |             | `string`  | `'[slot="content"]'`                              |
+| `hidden`             | `hidden`                |             | `boolean` | `false`                                           |
+| `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `false`                                           |
+| `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
+| `positions`          | `positions`             |             | `string`  | `"close-b-10,bottom-b-200,middle-b-450,top-t-60"` |
 
 
 ## Events
 
-| Event                 | Description | Type                                                                                          |
-| --------------------- | ----------- | --------------------------------------------------------------------------------------------- |
-| `changePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`                  |
-| `hideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; gestureTarget: HTMLElement; slotContent: HTMLElement; }>` |
+| Event                 | Description | Type                                                                                                             |
+| --------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| `changePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`                                     |
+| `hideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; slot: HTMLSlotElement; gestureTarget: HTMLElement; content: HTMLElement; }>` |
 
 
 ## Methods
@@ -94,6 +93,7 @@ Type: `Promise<void>`
 #### Returns
 
 Type: `Promise<void>`
+
 
 
 ## Slots: border / container
