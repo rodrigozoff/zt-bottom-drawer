@@ -6,6 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ZTHTMLElementsDrawer, ZTPositionDrawer } from "./components/zt-bottom-drawer/zt-bottom-drawer";
+import { ViewController } from "@ionic/core";
 export namespace Components {
     interface ZtBottomDrawer {
         "addCallbackCanActivateState": (callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>;
@@ -13,10 +14,10 @@ export namespace Components {
         "autoHeightContent": boolean;
         "autoShowOnLoad": boolean;
         "coefDuration": number;
-        "contentSelector": string;
         "disableGesture": boolean;
         "easing": string;
-        "gestureSelector": string;
+        "getActive": () => Promise<ViewController>;
+        "getNav": () => Promise<HTMLIonNavElement>;
         "getPositionByIndex": (index: number) => Promise<ZTPositionDrawer>;
         "getPositionByName": (name: string) => Promise<ZTPositionDrawer>;
         "hidden": boolean;
@@ -24,6 +25,7 @@ export namespace Components {
         "hideOnPositionZero": boolean;
         "positionName": string;
         "positions": string;
+        "pushNav": (component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<void>;
         "show": (positionName: string, notAnimate?: boolean | undefined) => Promise<void>;
     }
 }
@@ -43,10 +45,8 @@ declare namespace LocalJSX {
         "autoHeightContent"?: boolean;
         "autoShowOnLoad"?: boolean;
         "coefDuration"?: number;
-        "contentSelector"?: string;
         "disableGesture"?: boolean;
         "easing"?: string;
-        "gestureSelector"?: string;
         "hidden"?: boolean;
         "hideOnPositionZero"?: boolean;
         "onChangePositionEvent"?: (event: CustomEvent<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;

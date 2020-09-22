@@ -11,159 +11,7 @@
   <script type="module" src="/build/zt-bottom-drawer.esm.js"></script>
   <script nomodule src="/build/zt-bottom-drawer.js"></script>
   <style>
-    /*
-      * Dark Colors
-      * ------------------
-      */
-
-    body.dark {
-      --ion-color-primary: #428cff;
-      --ion-color-primary-rgb: 66, 140, 255;
-      --ion-color-primary-contrast: #ffffff;
-      --ion-color-primary-contrast-rgb: 255, 255, 255;
-      --ion-color-primary-shade: #3a7be0;
-      --ion-color-primary-tint: #5598ff;
-
-      --ion-color-secondary: #50c8ff;
-      --ion-color-secondary-rgb: 80, 200, 255;
-      --ion-color-secondary-contrast: #ffffff;
-      --ion-color-secondary-contrast-rgb: 255, 255, 255;
-      --ion-color-secondary-shade: #46b0e0;
-      --ion-color-secondary-tint: #62ceff;
-
-      --ion-color-tertiary: #6a64ff;
-      --ion-color-tertiary-rgb: 106, 100, 255;
-      --ion-color-tertiary-contrast: #ffffff;
-      --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-      --ion-color-tertiary-shade: #5d58e0;
-      --ion-color-tertiary-tint: #7974ff;
-
-      --ion-color-success: #2fdf75;
-      --ion-color-success-rgb: 47, 223, 117;
-      --ion-color-success-contrast: #000000;
-      --ion-color-success-contrast-rgb: 0, 0, 0;
-      --ion-color-success-shade: #29c467;
-      --ion-color-success-tint: #44e283;
-
-      --ion-color-warning: #ffd534;
-      --ion-color-warning-rgb: 255, 213, 52;
-      --ion-color-warning-contrast: #000000;
-      --ion-color-warning-contrast-rgb: 0, 0, 0;
-      --ion-color-warning-shade: #e0bb2e;
-      --ion-color-warning-tint: #ffd948;
-
-      --ion-color-danger: #ff4961;
-      --ion-color-danger-rgb: 255, 73, 97;
-      --ion-color-danger-contrast: #ffffff;
-      --ion-color-danger-contrast-rgb: 255, 255, 255;
-      --ion-color-danger-shade: #e04055;
-      --ion-color-danger-tint: #ff5b71;
-
-      --ion-color-dark: #f4f5f8;
-      --ion-color-dark-rgb: 244, 245, 248;
-      --ion-color-dark-contrast: #000000;
-      --ion-color-dark-contrast-rgb: 0, 0, 0;
-      --ion-color-dark-shade: #d7d8da;
-      --ion-color-dark-tint: #f5f6f9;
-
-      --ion-color-medium: #989aa2;
-      --ion-color-medium-rgb: 152, 154, 162;
-      --ion-color-medium-contrast: #000000;
-      --ion-color-medium-contrast-rgb: 0, 0, 0;
-      --ion-color-medium-shade: #86888f;
-      --ion-color-medium-tint: #a2a4ab;
-
-      --ion-color-light: #222428;
-      --ion-color-light-rgb: 34, 36, 40;
-      --ion-color-light-contrast: #ffffff;
-      --ion-color-light-contrast-rgb: 255, 255, 255;
-      --ion-color-light-shade: #1e2023;
-      --ion-color-light-tint: #383a3e;
-    }
-
-    /*
-      * iOS Dark Theme
-      * -------------------
-      */
-
-    .ios body.dark {
-      --ion-background-color: #000000;
-      --ion-background-color-rgb: 0, 0, 0;
-
-      --ion-text-color: #ffffff;
-      --ion-text-color-rgb: 255, 255, 255;
-
-      --ion-color-step-50: #0d0d0d;
-      --ion-color-step-100: #1a1a1a;
-      --ion-color-step-150: #262626;
-      --ion-color-step-200: #333333;
-      --ion-color-step-250: #404040;
-      --ion-color-step-300: #4d4d4d;
-      --ion-color-step-350: #595959;
-      --ion-color-step-400: #666666;
-      --ion-color-step-450: #737373;
-      --ion-color-step-500: #808080;
-      --ion-color-step-550: #8c8c8c;
-      --ion-color-step-600: #999999;
-      --ion-color-step-650: #a6a6a6;
-      --ion-color-step-700: #b3b3b3;
-      --ion-color-step-750: #bfbfbf;
-      --ion-color-step-800: #cccccc;
-      --ion-color-step-850: #d9d9d9;
-      --ion-color-step-900: #e6e6e6;
-      --ion-color-step-950: #f2f2f2;
-
-      --ion-toolbar-background: #0d0d0d;
-
-      --ion-item-background: #1c1c1c;
-      --ion-item-background-activated: #313131;
-    }
-
-    /*
-      * Material Design Dark Theme
-      * ------------------------------
-      */
-
-    .md body.dark {
-      --ion-background-color: #121212;
-      --ion-background-color-rgb: 18, 18, 18;
-
-      --ion-text-color: #ffffff;
-      --ion-text-color-rgb: 255, 255, 255;
-
-      --ion-border-color: #222222;
-
-      --ion-color-step-50: #1e1e1e;
-      --ion-color-step-100: #2a2a2a;
-      --ion-color-step-150: #363636;
-      --ion-color-step-200: #414141;
-      --ion-color-step-250: #4d4d4d;
-      --ion-color-step-300: #595959;
-      --ion-color-step-350: #656565;
-      --ion-color-step-400: #717171;
-      --ion-color-step-450: #7d7d7d;
-      --ion-color-step-500: #898989;
-      --ion-color-step-550: #949494;
-      --ion-color-step-600: #a0a0a0;
-      --ion-color-step-650: #acacac;
-      --ion-color-step-700: #b8b8b8;
-      --ion-color-step-750: #c4c4c4;
-      --ion-color-step-800: #d0d0d0;
-      --ion-color-step-850: #dbdbdb;
-      --ion-color-step-900: #e7e7e7;
-      --ion-color-step-950: #f3f3f3;
-
-      --ion-item-background: #1a1b1e;
-    }
-
-    /* Optional CSS, this is added for the flashing that happens when toggling between themes */
-    ion-item {
-      --transition: none;
-    }
-
-    body {
-      background: var(--ion-background-color);
-    }
+   
 
     .lds-ripple {
       display: inline-block;
@@ -209,24 +57,10 @@
     }
 
     zt-bottom-drawer {
-      --ion-background-color: #424040e7;
-      padding-left: 10px;
-      padding-right: 10px;
-    }
+       margin-left: 10px;
+      margin-right: 10px;
+      width: calc(100% - 20px);
 
-    zt-bottom-drawer [slot="border"] {
-      width: 100%;
-      height: 10px;
-      border: none;
-      border-top-color: #424040e7;
-      border-top-right-radius: 8px;
-      border-top-left-radius: 8px;
-      background-color: #424040e7;
-      border-top-style: solid;
-      border-width: 1px;
-      border-bottom-right-radius: 0px;
-      border-bottom-left-radius: 0px;
-      margin-left: 0px;
       -webkit-box-shadow: 0px -3px 7px 0px #383434e7;
       box-shadow: 0px -3px 7px 0px #383434e7;
     }
@@ -239,104 +73,233 @@
     <div></div>
     <div></div>
   </div>
-  <zt-bottom-drawer id="drawer" hide-on-position-zero=true position-name="bottom" content-selector=".content-target"
-    gesture-selector=".gesture-target" positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
-    <div slot="content">
-      <div class="gesture-target">
-        <ion-header translucent="true">
-          <ion-toolbar>
-            <ion-buttons slot="start">
-              <ion-menu-button auto-hide="false"></ion-menu-button>
-            </ion-buttons>
-            <ion-buttons slot="primary">
-              <ion-button>
-                <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-            <ion-title>Content</ion-title>
-          </ion-toolbar>
-        </ion-header>
-
-
-        <ion-content fullscreen class="content-target">
-          <p class="ion-padding-start ion-padding-end">
-            <ion-button onclick="scrollToBottom()" expand="block" fill="outline">Scroll To Bottom</ion-button>
-          </p>
-          <ion-card class="card-close">
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle v1</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-              <ion-card-title>Card Title</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Keep close to Nature's heart... and break clear away, once in awhile,
-              and climb a mountain or spend a week in the woods. Wash your spirit clean.
-            </ion-card-content>
-          </ion-card>
-          <p class="ion-padding-start ion-padding-end">
-            <ion-button onclick="scrollToTop()" expand="block" fill="outline">Scroll To Top</ion-button>
-          </p>
-        </ion-content>
-      </div>
-    </div>
+  <zt-bottom-drawer id="drawer" hide-on-position-zero=true position-name="bottom"
+    positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
   </zt-bottom-drawer>
   <script>
+
+    techs = [
+      {
+        'title': 'Angular',
+        'icon': 'angular',
+        'description': 'A powerful Javascript framework for building single page apps. Angular is open source, and maintained by Google.',
+        'color': '#E63135'
+      },
+      {
+        'title': 'CSS3',
+        'icon': 'css3',
+        'description': 'The latest version of cascading stylesheets - the styling language of the web!',
+        'color': '#0CA9EA'
+      },
+      {
+        'title': 'HTML5',
+        'icon': 'html5',
+        'description': 'The latest version of the web\'s markup language.',
+        'color': '#F46529'
+      },
+      {
+        'title': 'JavaScript',
+        'icon': 'javascript',
+        'description': 'One of the most popular programming languages on the Web!',
+        'color': '#FFD439'
+      },
+      {
+        'title': 'Sass',
+        'icon': 'sass',
+        'description': 'Syntactically Awesome Stylesheets - a mature, stable, and powerful professional grade CSS extension.',
+        'color': '#CE6296'
+      },
+      {
+        'title': 'NodeJS',
+        'icon': 'nodejs',
+        'description': 'An open-source, cross-platform runtime environment for developing server-side Web applications.',
+        'color': '#78BD43'
+      },
+      {
+        'title': 'Python',
+        'icon': 'python',
+        'description': 'A clear and powerful object-oriented programming language!',
+        'color': '#3575AC'
+      },
+      {
+        'title': 'Markdown',
+        'icon': 'markdown',
+        'description': 'A super simple way to add formatting like headers, bold, bulleted lists, and so on to plain text.',
+        'color': '#412159'
+      },
+      {
+        'title': 'Tux',
+        'icon': 'tux',
+        'description': 'The official mascot of the Linux kernel!',
+        'color': '#000'
+      }, {
+        'title': 'Angular',
+        'icon': 'angular',
+        'description': 'A powerful Javascript framework for building single page apps. Angular is open source, and maintained by Google.',
+        'color': '#E63135'
+      },
+      {
+        'title': 'CSS3',
+        'icon': 'css3',
+        'description': 'The latest version of cascading stylesheets - the styling language of the web!',
+        'color': '#0CA9EA'
+      },
+      {
+        'title': 'HTML5',
+        'icon': 'html5',
+        'description': 'The latest version of the web\'s markup language.',
+        'color': '#F46529'
+      },
+      {
+        'title': 'JavaScript',
+        'icon': 'javascript',
+        'description': 'One of the most popular programming languages on the Web!',
+        'color': '#FFD439'
+      },
+      {
+        'title': 'Sass',
+        'icon': 'sass',
+        'description': 'Syntactically Awesome Stylesheets - a mature, stable, and powerful professional grade CSS extension.',
+        'color': '#CE6296'
+      },
+      {
+        'title': 'NodeJS',
+        'icon': 'nodejs',
+        'description': 'An open-source, cross-platform runtime environment for developing server-side Web applications.',
+        'color': '#78BD43'
+      },
+      {
+        'title': 'Python',
+        'icon': 'python',
+        'description': 'A clear and powerful object-oriented programming language!',
+        'color': '#3575AC'
+      },
+      {
+        'title': 'Markdown',
+        'icon': 'markdown',
+        'description': 'A super simple way to add formatting like headers, bold, bulleted lists, and so on to plain text.',
+        'color': '#412159'
+      },
+      {
+        'title': 'Tux',
+        'icon': 'tux',
+        'description': 'The official mascot of the Linux kernel!',
+        'color': '#000'
+      }, {
+        'title': 'Angular',
+        'icon': 'angular',
+        'description': 'A powerful Javascript framework for building single page apps. Angular is open source, and maintained by Google.',
+        'color': '#E63135'
+      },
+      {
+        'title': 'CSS3',
+        'icon': 'css3',
+        'description': 'The latest version of cascading stylesheets - the styling language of the web!',
+        'color': '#0CA9EA'
+      },
+      {
+        'title': 'HTML5',
+        'icon': 'html5',
+        'description': 'The latest version of the web\'s markup language.',
+        'color': '#F46529'
+      },
+      {
+        'title': 'JavaScript',
+        'icon': 'javascript',
+        'description': 'One of the most popular programming languages on the Web!',
+        'color': '#FFD439'
+      },
+      {
+        'title': 'Sass',
+        'icon': 'sass',
+        'description': 'Syntactically Awesome Stylesheets - a mature, stable, and powerful professional grade CSS extension.',
+        'color': '#CE6296'
+      },
+      {
+        'title': 'NodeJS',
+        'icon': 'nodejs',
+        'description': 'An open-source, cross-platform runtime environment for developing server-side Web applications.',
+        'color': '#78BD43'
+      },
+      {
+        'title': 'Python',
+        'icon': 'python',
+        'description': 'A clear and powerful object-oriented programming language!',
+        'color': '#3575AC'
+      },
+      {
+        'title': 'Markdown',
+        'icon': 'markdown',
+        'description': 'A super simple way to add formatting like headers, bold, bulleted lists, and so on to plain text.',
+        'color': '#412159'
+      },
+      {
+        'title': 'Tux',
+        'icon': 'tux',
+        'description': 'The official mascot of the Linux kernel!',
+        'color': '#000'
+      },
+    ];
+
+    customElements.define('nav-home', class NavHome extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = `
+          <div class="contenedor">
+            <ion-header translucent>
+            <ion-toolbar>
+              <ion-title>Nav</ion-title>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content  >
+            <ion-list>
+            ${techs.map(tech => `
+                <ion-item button onclick="showDetail('${tech.title}')">
+                  <ion-icon slot="start" name="logo-${tech.icon}" style="color: ${tech.color};"></ion-icon>
+                  <ion-label>
+                    <h3>${tech.title}</h3>
+                  </ion-label>
+                </ion-item>
+            `).join('\n')}
+            </ion-list>
+          </ion-content>
+        </div>
+        `;
+      }
+    });
+
+    function showDetail(title) {
+      const tech = techs.find(tech => tech.title === title);
+      let drawer = document.getElementById("drawer");
+      drawer.pushNav('nav-detail', { tech });
+    }
+
+    customElements.define('nav-detail', class NavDetail extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = `
+          <ion-header translucent>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-back-button defaultHref="/"></ion-back-button>
+              </ion-buttons>
+              <ion-title>${this.tech.title}</ion-title>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content fullscreen class="ion-padding">
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+          </ion-content>
+        `;
+      }
+    });
+
     window.onload = () => {
       let drawer = document.getElementById("drawer");
+      drawer.pushNav("nav-home", {}, ".contenedor");
 
       drawer.addEventListener("hideEvent", () => {
         setTimeout(() => {
           drawer.show("middle");
-        }, 5000);
+        }, 2000);
       });
 
       drawer.addEventListener("changePositionEvent", () => { console.log("change position") });

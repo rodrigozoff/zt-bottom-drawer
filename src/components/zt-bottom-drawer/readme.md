@@ -12,10 +12,8 @@
 | `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
 | `autoShowOnLoad`     | `auto-show-on-load`     |             | `boolean` | `true`                                            |
 | `coefDuration`       | `coef-duration`         |             | `number`  | `150`                                             |
-| `contentSelector`    | `content-selector`      |             | `string`  | `'[slot="content"]'`                              |
 | `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
 | `easing`             | `easing`                |             | `string`  | `'cubic-bezier(.56,.05,.91,.88)'`                 |
-| `gestureSelector`    | `gesture-selector`      |             | `string`  | `'[slot="content"]'`                              |
 | `hidden`             | `hidden`                |             | `boolean` | `false`                                           |
 | `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `false`                                           |
 | `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
@@ -24,10 +22,10 @@
 
 ## Events
 
-| Event                 | Description | Type                                                                                                             |
-| --------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
-| `changePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`                                     |
-| `hideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; slot: HTMLSlotElement; gestureTarget: HTMLElement; content: HTMLElement; }>` |
+| Event                 | Description | Type                                                                                      |
+| --------------------- | ----------- | ----------------------------------------------------------------------------------------- |
+| `changePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`              |
+| `hideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; gestureTarget: HTMLElement; content: HTMLElement; }>` |
 
 
 ## Methods
@@ -49,6 +47,26 @@ Type: `Promise<void>`
 #### Returns
 
 Type: `Promise<void>`
+
+
+
+### `getActive() => Promise<ViewController>`
+
+
+
+#### Returns
+
+Type: `Promise<ViewController>`
+
+
+
+### `getNav() => Promise<HTMLIonNavElement>`
+
+
+
+#### Returns
+
+Type: `Promise<HTMLIonNavElement>`
 
 
 
@@ -82,6 +100,16 @@ Type: `Promise<void>`
 
 
 
+### `pushNav(component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `show(positionName: string, notAnimate?: boolean | undefined) => Promise<void>`
 
 
@@ -92,6 +120,19 @@ Type: `Promise<void>`
 
 
 
+
+## Dependencies
+
+### Depends on
+
+- ion-nav
+
+### Graph
+```mermaid
+graph TD;
+  zt-bottom-drawer --> ion-nav
+  style zt-bottom-drawer fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 
