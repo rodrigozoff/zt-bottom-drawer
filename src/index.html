@@ -11,8 +11,6 @@
   <script type="module" src="/build/zt-bottom-drawer.esm.js"></script>
   <script nomodule src="/build/zt-bottom-drawer.js"></script>
   <style>
-   
-
     .lds-ripple {
       display: inline-block;
       position: relative;
@@ -57,7 +55,7 @@
     }
 
     zt-bottom-drawer {
-       margin-left: 10px;
+      margin-left: 10px;
       margin-right: 10px;
       width: calc(100% - 20px);
 
@@ -318,8 +316,7 @@
               document.getElementById("loader").classList.remove("lds-ripple");
               let resultRandom = Math.random();
               console.log(resultRandom > 0.5 ? "Can Activate" : "Can't Activate");
-              //  resolve(resultRandom > 0.5 ? true : false);
-              resolve(true);
+              resolve(resultRandom > 0.5 ? true : false);
             }, 1000 * (Math.random() * (3 - 1) + 1));
           });
         }
