@@ -1,7 +1,7 @@
 import { h, Prop, Watch, Host, Element, Component, Event, EventEmitter, Method } from '@stencil/core';
 import { createGesture, createAnimation, Gesture, Animation, GestureDetail, ViewController } from '@ionic/core';
 
-export type ZTPositionDrawer = { index: number, name: string, distanceTo: "BOTTOM" | "TOP", distance: number, distanceToTop: number,  previousPosition: ZTPositionDrawer, nextPosition: ZTPositionDrawer };
+export type ZTPositionDrawer = { index: number, name: string, distanceTo: "BOTTOM" | "TOP", distance: number, distanceToTop: number, previousPosition: ZTPositionDrawer, nextPosition: ZTPositionDrawer };
 export type ZTHTMLElementsDrawer = { drawer: HTMLElement, gestureTarget: HTMLElement, content: HTMLElement };
 
 type ResultgetPositionByPosY = { newPosition: ZTPositionDrawer, close: boolean };
@@ -191,9 +191,7 @@ export class ZTBottomDrawer {
                         distance: Number.parseInt(splitPosition[2]),
                         distanceToTop: 0,
                         previousPosition: null,
-                        nextPosition: null,
-//distanceMaginBottom: 0,
-                    //    distanceMarginTop: 0
+                        nextPosition: null
                     };
                     if (position.distanceTo === "TOP") {
                         position.distanceToTop = position.distance;
@@ -214,8 +212,8 @@ export class ZTBottomDrawer {
             }
         })
         positions.forEach((position) => {
-                if (!position.nextPosition) {
-                   this.maxTop = position.distanceToTop;
+            if (!position.nextPosition) {
+                this.maxTop = position.distanceToTop;
             }
         });
 
@@ -353,17 +351,27 @@ export class ZTBottomDrawer {
             this.setHeightContent("MAX");
 
         this.startPosTopMove = this._htmlElements.drawer.getBoundingClientRect().top;
+        this.previusPositionY = this.startPosTopMove;
         // console.log("Start", ev);
     }
 
+    previusPositionY: number;
+    lastPositionY:number;
     onMove(ev: GestureDetail) {
         if (this.cancelMove)
             return;
+
+            
         let calc = this.startPosTopMove + ev.deltaY;
+
         //console.log("Move", ev);
         //console.log(`${this.startPosTopMove} + ${ev.deltaY} = ${calc}`);
-        if (calc >= this.maxTop)
+        if (calc >= this.maxTop){
+            this.previusPositionY= this.lastPositionY;
+            this.lastPositionY=ev.currentY;
             this.setTranslateY(calc);
+        }
+         
     }
 
     onEnd(ev: GestureDetail) {
@@ -376,8 +384,9 @@ export class ZTBottomDrawer {
         this.setDisableGesture(this.disableGesture);
     }
 
-    getDirectionGesture(ev: GestureDetail): "UP" | "DOWN" {
-        if (ev.deltaY / Math.abs(ev.deltaY) * -1 > 0)
+    getDirectionGesture(): "UP" | "DOWN" {
+        let deltaY = this.lastPositionY - this.previusPositionY;
+        if (deltaY / Math.abs(deltaY) * -1 > 0)
             return "UP"
         else
             return "DOWN"
@@ -397,7 +406,7 @@ export class ZTBottomDrawer {
         let calculatePosition: ZTPositionDrawer = this._position;
 
         let calc = this.startPosTopMove + ev.deltaY;
-        let result: ResultgetPositionByPosY = this.getPositionByPosY(calc, this.getDirectionGesture(ev));
+        let result: ResultgetPositionByPosY = this.getPositionByPosY(calc, this.getDirectionGesture());
 
         if (result.close) {
             if (this.hideOnPositionZero) {
