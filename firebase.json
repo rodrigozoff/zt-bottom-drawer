@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "zt-drawer-bottom", 
+    "public": "www",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
