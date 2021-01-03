@@ -49,18 +49,24 @@
     }
 
     #loader {
+      z-index: 10000000000;
       position: absolute;
       display: block;
       left: calc(calc(100% / 2) - 40px);
     }
 
     zt-bottom-drawer {
+      z-index: 100000;
       margin-left: 10px;
       margin-right: 10px;
       width: calc(100% - 20px);
 
       -webkit-box-shadow: 0px -3px 7px 0px #383434e7;
       box-shadow: 0px -3px 7px 0px #383434e7;
+    }
+
+    zt-nav {
+      z-index: 10000;
     }
   </style>
 </head>
@@ -74,26 +80,31 @@
   <zt-bottom-drawer id="drawer" hide-on-position-zero=true position-name="bottom"
     positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
   </zt-bottom-drawer>
+  <zt-nav id="ztNav">
+  </zt-nav>
   <script>
 
     techs = [
       {
-        'title': 'Angular',
+        'title': 'Angular / Open Top',
         'icon': 'angular',
         'description': 'A powerful Javascript framework for building single page apps. Angular is open source, and maintained by Google.',
-        'color': '#E63135'
+        'color': '#E63135',
+        'position_drawer': 'top'
       },
       {
-        'title': 'CSS3',
+        'title': 'CSS3 / Open middle',
         'icon': 'css3',
         'description': 'The latest version of cascading stylesheets - the styling language of the web!',
-        'color': '#0CA9EA'
+        'color': '#0CA9EA',
+        'position_drawer': 'middle'
       },
       {
-        'title': 'HTML5',
+        'title': 'HTML5 / Open bottom',
         'icon': 'html5',
         'description': 'The latest version of the web\'s markup language.',
-        'color': '#F46529'
+        'color': '#F46529',
+        'position_drawer': 'bottom'
       },
       {
         'title': 'JavaScript',
@@ -242,13 +253,12 @@
     customElements.define('nav-home', class NavHome extends HTMLElement {
       connectedCallback() {
         this.innerHTML = `
-          <div class="contenedor">
-            <ion-header translucent>
+          <ion-header translucent>
             <ion-toolbar>
-              <ion-title>Nav</ion-title>
+              <ion-title>Nav v21</ion-title>
             </ion-toolbar>
           </ion-header>
-          <ion-content  >
+          <ion-content>
             <ion-list>
             ${techs.map(tech => `
                 <ion-item button onclick="showDetail('${tech.title}')">
@@ -260,15 +270,18 @@
             `).join('\n')}
             </ion-list>
           </ion-content>
-        </div>
         `;
       }
     });
 
-    function showDetail(title) {
+    async function showDetail(title) {
       const tech = techs.find(tech => tech.title === title);
       let drawer = document.getElementById("drawer");
-      drawer.pushNav('nav-detail', { tech });
+      if(tech.position_drawer){
+        drawer.setAttribute("position-name",tech.position_drawer);
+      }
+      let resultNav = await drawer.pushNav('nav-detail', { tech });
+      console.log("Result nav ", tech, resultNav);
     }
 
     customElements.define('nav-detail', class NavDetail extends HTMLElement {
@@ -288,11 +301,24 @@
           </ion-content>
         `;
       }
+
+      async canDeactivatePositionDrawer(currentProsition, newPosition) {
+        console.log(currentProsition, newPosition);
+        return false;
+      }
+
+      async canActivatePositionDrawer(newPosition, lastPosition) {
+        console.log(newPosition, lastPosition);
+        return true;
+      }
     });
 
     window.onload = () => {
+      let ztNav = document.getElementById("ztNav");
+      ztNav.pushNav("nav-home", {});
+
       let drawer = document.getElementById("drawer");
-      drawer.pushNav("nav-home", {}, ".contenedor");
+      drawer.pushNav("nav-home", {});
 
       drawer.addEventListener("hideEvent", () => {
         setTimeout(() => {
@@ -309,17 +335,17 @@
 
       drawer.addCallbackCanActivateState((postionName, oldPostionName, htmlElements) => {
         console.log("ActivateState", postionName, htmlElements);
-        if (postionName === "top") {
-          return new Promise((resolve) => {
-            document.getElementById("loader").classList.add("lds-ripple");
-            setTimeout(() => {
-              document.getElementById("loader").classList.remove("lds-ripple");
-              let resultRandom = Math.random();
-              console.log(resultRandom > 0.5 ? "Can Activate" : "Can't Activate");
-              resolve(resultRandom > 0.5 ? true : false);
-            }, 1000 * (Math.random() * (3 - 1) + 1));
-          });
-        }
+        /* if (postionName === "top") {
+           return new Promise((resolve) => {
+             document.getElementById("loader").classList.add("lds-ripple");
+             setTimeout(() => {
+               document.getElementById("loader").classList.remove("lds-ripple");
+               let resultRandom = Math.random();
+               console.log(resultRandom > 0.5 ? "Can Activate" : "Can't Activate");
+               resolve(resultRandom > 0.5 ? true : false);
+             }, 1000 * (Math.random() * (3 - 1) + 1));
+           });
+         }*/
         return true;
       });
     }

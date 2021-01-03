@@ -10,10 +10,8 @@
 | Property             | Attribute               | Description | Type      | Default                                           |
 | -------------------- | ----------------------- | ----------- | --------- | ------------------------------------------------- |
 | `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
-| `autoShowOnLoad`     | `auto-show-on-load`     |             | `boolean` | `true`                                            |
-| `coefDuration`       | `coef-duration`         |             | `number`  | `150`                                             |
+| `coefDuration`       | `coef-duration`         |             | `number`  | `75`                                              |
 | `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
-| `easing`             | `easing`                |             | `string`  | `'cubic-bezier(.56,.05,.91,.88)'`                 |
 | `hidden`             | `hidden`                |             | `boolean` | `false`                                           |
 | `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `false`                                           |
 | `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
@@ -50,7 +48,17 @@ Type: `Promise<void>`
 
 
 
-### `getActive() => Promise<ViewController>`
+### `getNav() => Promise<HTMLIonNavElement>`
+
+
+
+#### Returns
+
+Type: `Promise<HTMLIonNavElement>`
+
+
+
+### `getNavActive() => Promise<ViewController>`
 
 
 
@@ -60,13 +68,13 @@ Type: `Promise<ViewController>`
 
 
 
-### `getNav() => Promise<HTMLIonNavElement>`
+### `getNavCurrentComponent() => Promise<any>`
 
 
 
 #### Returns
 
-Type: `Promise<HTMLIonNavElement>`
+Type: `Promise<any>`
 
 
 
@@ -90,7 +98,7 @@ Type: `Promise<ZTPositionDrawer>`
 
 
 
-### `hide(notAnimate?: boolean | undefined) => Promise<void>`
+### `hide() => Promise<void>`
 
 
 
@@ -100,7 +108,17 @@ Type: `Promise<void>`
 
 
 
-### `pushNav(component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<void>`
+### `pushNav(component: any, propsComponent: any, selectorGesture: string, selectorContent?: string) => Promise<boolean>`
+
+
+
+#### Returns
+
+Type: `Promise<boolean>`
+
+
+
+### `setAnimation() => Promise<void>`
 
 
 
@@ -110,7 +128,7 @@ Type: `Promise<void>`
 
 
 
-### `show(positionName: string, notAnimate?: boolean | undefined) => Promise<void>`
+### `show(positionName: string) => Promise<void>`
 
 
 

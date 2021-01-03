@@ -6,27 +6,32 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ZTHTMLElementsDrawer, ZTPositionDrawer } from "./components/zt-bottom-drawer/zt-bottom-drawer";
-import { ViewController } from "@ionic/core";
+import { ComponentProps, NavComponent, NavOptions, TransitionDoneFn, ViewController } from "@ionic/core";
 export namespace Components {
     interface ZtBottomDrawer {
         "addCallbackCanActivateState": (callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>;
         "addCallbackCanDeactivateState": (callback: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>;
         "autoHeightContent": boolean;
-        "autoShowOnLoad": boolean;
         "coefDuration": number;
         "disableGesture": boolean;
-        "easing": string;
-        "getActive": () => Promise<ViewController>;
         "getNav": () => Promise<HTMLIonNavElement>;
+        "getNavActive": () => Promise<ViewController>;
+        "getNavCurrentComponent": () => Promise<any>;
         "getPositionByIndex": (index: number) => Promise<ZTPositionDrawer>;
         "getPositionByName": (name: string) => Promise<ZTPositionDrawer>;
         "hidden": boolean;
-        "hide": (notAnimate?: boolean | undefined) => Promise<void>;
+        "hide": () => Promise<void>;
         "hideOnPositionZero": boolean;
         "positionName": string;
         "positions": string;
-        "pushNav": (component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<void>;
-        "show": (positionName: string, notAnimate?: boolean | undefined) => Promise<void>;
+        "pushNav": (component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<boolean>;
+        "setAnimation": () => Promise<void>;
+        "show": (positionName: string) => Promise<void>;
+    }
+    interface ZtNav {
+        "getActive": () => Promise<ViewController>;
+        "getNav": () => Promise<HTMLIonNavElement>;
+        "pushNav": <T extends NavComponent>(component: any, componentProps?: ComponentProps<T> | null | undefined, opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<boolean>;
     }
 }
 declare global {
@@ -36,17 +41,22 @@ declare global {
         prototype: HTMLZtBottomDrawerElement;
         new (): HTMLZtBottomDrawerElement;
     };
+    interface HTMLZtNavElement extends Components.ZtNav, HTMLStencilElement {
+    }
+    var HTMLZtNavElement: {
+        prototype: HTMLZtNavElement;
+        new (): HTMLZtNavElement;
+    };
     interface HTMLElementTagNameMap {
         "zt-bottom-drawer": HTMLZtBottomDrawerElement;
+        "zt-nav": HTMLZtNavElement;
     }
 }
 declare namespace LocalJSX {
     interface ZtBottomDrawer {
         "autoHeightContent"?: boolean;
-        "autoShowOnLoad"?: boolean;
         "coefDuration"?: number;
         "disableGesture"?: boolean;
-        "easing"?: string;
         "hidden"?: boolean;
         "hideOnPositionZero"?: boolean;
         "onChangePositionEvent"?: (event: CustomEvent<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
@@ -54,8 +64,11 @@ declare namespace LocalJSX {
         "positionName"?: string;
         "positions"?: string;
     }
+    interface ZtNav {
+    }
     interface IntrinsicElements {
         "zt-bottom-drawer": ZtBottomDrawer;
+        "zt-nav": ZtNav;
     }
 }
 export { LocalJSX as JSX };
@@ -63,6 +76,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "zt-bottom-drawer": LocalJSX.ZtBottomDrawer & JSXBase.HTMLAttributes<HTMLZtBottomDrawerElement>;
+            "zt-nav": LocalJSX.ZtNav & JSXBase.HTMLAttributes<HTMLZtNavElement>;
         }
     }
 }
