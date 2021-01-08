@@ -108,7 +108,7 @@ Type: `Promise<void>`
 
 
 
-### `pushNav(component: any, propsComponent: any, selectorGesture: string, selectorContent?: string) => Promise<boolean>`
+### `pushNav(component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<boolean>`
 
 
 

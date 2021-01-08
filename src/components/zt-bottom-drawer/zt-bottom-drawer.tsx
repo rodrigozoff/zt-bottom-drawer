@@ -676,7 +676,7 @@ export class ZTBottomDrawer {
 
     render() {
         return (<Host>
-            <ion-nav onIonNavDidChange={(ev) => { this.navDidChange(); }} ref={elNsv => this.nav = elNsv} ></ion-nav>
+            <ion-nav onIonNavDidChange={() => { this.navDidChange(); }} ref={elNsv => this.nav = elNsv} ></ion-nav>
         </Host>);
     }
 
