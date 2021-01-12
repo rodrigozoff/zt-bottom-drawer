@@ -158,10 +158,10 @@ export class ZTBottomDrawer {
         this._htmlElements = { drawer: null, gestureTarget: null, content: null };
         this._htmlElements.drawer = this.el;
         this.el.style.setProperty("height", this.getWHWindow().height + "px");
-        this.nav.addEventListener("ionNavDidChange", async () => {
+  /*      this.nav.addEventListener("ionNavDidChange", async () => {
             let activeContent: any = await this.nav.getActive();
             this.initActiveContentNav(activeContent);
-        });
+        });*/
         this.setPositions(this.positions);
     }
 
@@ -541,6 +541,14 @@ export class ZTBottomDrawer {
         }, 10);
     }
 
+    @Method()
+    async setPositionByName(name: string): Promise<void> {
+        let newPosition = await this.getPositionByName(name);
+        if (newPosition && this._position.name !== newPosition.name) {
+            return await this.setPosition(newPosition);
+        } 
+    }
+
     async setPosition(value: ZTPositionDrawer): Promise<void> {
         if (this.gesture)
             this.gesture.enable(false);
@@ -662,16 +670,6 @@ export class ZTBottomDrawer {
             this.ionContent.scrollY = false;
             return;
         }
-        /*
-                ion-content {
-                    --overflow: hidden;
-                }*/
-
-        /*  if (this.lastHeightContent < value || (heightOf === "CONTENT" && this.lastHeightContent !== value)) {
-              //console.log(`setProperty("height", ${value} + "px")`);
-              this._htmlElements.content.style.setProperty("height", value + "px");
-              this.lastHeightContent = value;
-          }*/
     }
 
     render() {
@@ -679,7 +677,4 @@ export class ZTBottomDrawer {
             <ion-nav onIonNavDidChange={() => { this.navDidChange(); }} ref={elNsv => this.nav = elNsv} ></ion-nav>
         </Host>);
     }
-
-
-
 }

@@ -128,6 +128,16 @@ Type: `Promise<void>`
 
 
 
+### `setPositionByName(name: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `show(positionName: string) => Promise<void>`
 
 

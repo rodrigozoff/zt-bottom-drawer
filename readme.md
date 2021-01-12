@@ -13,7 +13,8 @@ $ npm i @zoff-tech/zt-bottom-drawer
 
 
 
-<!-- Auto Generated Below -->
+# zt-bottom-drawer
+
 
 
 <!-- Auto Generated Below -->
@@ -122,7 +123,7 @@ Type: `Promise<void>`
 
 
 
-### `pushNav(component: any, propsComponent: any, selectorGesture: string, selectorContent?: string) => Promise<boolean>`
+### `pushNav(component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<boolean>`
 
 
 
@@ -133,6 +134,16 @@ Type: `Promise<boolean>`
 
 
 ### `setAnimation() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setPositionByName(name: string) => Promise<void>`
 
 
 

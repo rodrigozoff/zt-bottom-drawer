@@ -26,6 +26,7 @@ export namespace Components {
         "positions": string;
         "pushNav": (component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<boolean>;
         "setAnimation": () => Promise<void>;
+        "setPositionByName": (name: string) => Promise<void>;
         "show": (positionName: string) => Promise<void>;
     }
     interface ZtNav {
