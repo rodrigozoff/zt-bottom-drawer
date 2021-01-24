@@ -13,10 +13,6 @@ $ npm i @zoff-tech/zt-bottom-drawer
 
 
 
-# zt-bottom-drawer
-
-
-
 <!-- Auto Generated Below -->
 
 
@@ -35,10 +31,11 @@ $ npm i @zoff-tech/zt-bottom-drawer
 
 ## Events
 
-| Event                 | Description | Type                                                                                      |
-| --------------------- | ----------- | ----------------------------------------------------------------------------------------- |
-| `changePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`              |
-| `hideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; gestureTarget: HTMLElement; content: HTMLElement; }>` |
+| Event                   | Description | Type                                                                                      |
+| ----------------------- | ----------- | ----------------------------------------------------------------------------------------- |
+| `ztChangePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`              |
+| `ztHideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; gestureTarget: HTMLElement; content: HTMLElement; }>` |
+| `ztNavDidChange`        |             | `CustomEvent<any>`                                                                        |
 
 
 ## Methods
@@ -110,6 +107,36 @@ Type: `Promise<ZTPositionDrawer>`
 #### Returns
 
 Type: `Promise<ZTPositionDrawer>`
+
+
+
+### `goBack(opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>`
+
+
+
+#### Returns
+
+Type: `Promise<Boolean>`
+
+
+
+### `goBackToIndex(index: number, opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>`
+
+
+
+#### Returns
+
+Type: `Promise<Boolean>`
+
+
+
+### `goBackToRoot(opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>`
+
+
+
+#### Returns
+
+Type: `Promise<Boolean>`
 
 
 

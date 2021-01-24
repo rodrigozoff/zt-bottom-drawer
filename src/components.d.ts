@@ -19,6 +19,9 @@ export namespace Components {
         "getNavCurrentComponent": () => Promise<any>;
         "getPositionByIndex": (index: number) => Promise<ZTPositionDrawer>;
         "getPositionByName": (name: string) => Promise<ZTPositionDrawer>;
+        "goBack": (opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>;
+        "goBackToIndex": (index: number, opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>;
+        "goBackToRoot": (opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>;
         "hidden": boolean;
         "hide": () => Promise<void>;
         "hideOnPositionZero": boolean;
@@ -60,8 +63,9 @@ declare namespace LocalJSX {
         "disableGesture"?: boolean;
         "hidden"?: boolean;
         "hideOnPositionZero"?: boolean;
-        "onChangePositionEvent"?: (event: CustomEvent<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
-        "onHideEvent"?: (event: CustomEvent<ZTHTMLElementsDrawer>) => void;
+        "onZtChangePositionEvent"?: (event: CustomEvent<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
+        "onZtHideEvent"?: (event: CustomEvent<ZTHTMLElementsDrawer>) => void;
+        "onZtNavDidChange"?: (event: CustomEvent<any>) => void;
         "positionName"?: string;
         "positions"?: string;
     }

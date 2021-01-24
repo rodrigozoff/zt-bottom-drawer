@@ -1,5 +1,5 @@
 import { h, Prop, Watch, Host, Element, Component, Event, EventEmitter, Method } from '@stencil/core';
-import { createGesture, createAnimation, Gesture, Animation, GestureDetail, ViewController } from '@ionic/core';
+import { createGesture, createAnimation, Gesture, Animation, GestureDetail, ViewController, TransitionDoneFn, NavOptions } from '@ionic/core';
 
 export type ZTPositionDrawer = { index: number, name: string, distanceTo: "BOTTOM" | "TOP", distance: number, distanceToTop: number, previousPosition: ZTPositionDrawer, nextPosition: ZTPositionDrawer };
 export type ZTHTMLElementsDrawer = { drawer: HTMLElement, gestureTarget: HTMLElement, content: HTMLElement };
@@ -36,9 +36,11 @@ export class ZTBottomDrawer {
 
     @Prop({ reflect: true }) autoHeightContent: boolean = true;
 
-    @Event() changePositionEvent: EventEmitter<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>;
+    @Event() ztChangePositionEvent: EventEmitter<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>;
 
-    @Event() hideEvent: EventEmitter<ZTHTMLElementsDrawer>;
+    @Event() ztHideEvent: EventEmitter<ZTHTMLElementsDrawer>;
+
+    @Event() ztNavDidChange: EventEmitter<any>;
 
     @Method()
     async addCallbackCanActivateState(callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) {
@@ -50,6 +52,21 @@ export class ZTBottomDrawer {
     @Method()
     async getNav(): Promise<HTMLIonNavElement> {
         return this.nav;
+    }
+
+    @Method()
+    async goBack(opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined): Promise<Boolean> {
+        return this.nav.pop(opts,done);
+    }
+
+    @Method()
+    async goBackToRoot(opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined): Promise<Boolean> {
+        return this.nav.popToRoot(opts,done);
+    }
+
+    @Method()
+    async goBackToIndex(index:number,opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined): Promise<Boolean> {
+        return this.nav.popTo(index,opts,done);
     }
 
     @Method()
@@ -99,6 +116,8 @@ export class ZTBottomDrawer {
         await this.initActiveContentNav(contentActive);
 
         contentActive.component.__zt_navDrawer.resolve(true);
+
+        this.ztNavDidChange.emit(contentActive)
     }
 
     async initActiveContentNav(contentActive: any) {
@@ -113,7 +132,10 @@ export class ZTBottomDrawer {
 
             this.addGesture(gestureTarget);
 
-            if (this._htmlElements.content.nodeName == "ION-CONTENT" && this.autoHeightContent) {
+            if (this._htmlElements &&
+                 this._htmlElements.content && 
+                 this._htmlElements.content.nodeName == "ION-CONTENT" &&
+                  this.autoHeightContent) {
 
                 if (this.ionContent && this.handlerIonScroll) {
                     this.ionContent.removeEventListener("ionScroll", this.handlerIonScroll)
@@ -123,7 +145,6 @@ export class ZTBottomDrawer {
                 this.ionContent.scrollEvents = true;
                 this.handlerIonScroll = (ev: any) => {
                     this.ionContentNotTopScroll = ev && ev.detail && ev.detail.scrollTop !== 0;
-                    //console.log("  this.ionContentNotTopScroll : " + this.ionContentNotTopScroll)
                 };
                 this.ionContent.addEventListener("ionScroll", this.handlerIonScroll);
             }
@@ -497,7 +518,7 @@ export class ZTBottomDrawer {
 
         if (result.close) {
             if (this.hideOnPositionZero) {
-                this.hideEvent.emit();
+                this.ztHideEvent.emit();
                 return this.hide();
             }
         }
@@ -586,7 +607,7 @@ export class ZTBottomDrawer {
 
             this._position = value;
             this.positionName = this._position.name;
-            this.changePositionEvent.emit({ positionName: this.positionName, htmlElements: this._htmlElements });
+            this.ztChangePositionEvent.emit({ positionName: this.positionName, htmlElements: this._htmlElements });
         }
 
         this.setHeightContent("MAX");

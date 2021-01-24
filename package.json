@@ -1,6 +1,6 @@
 {
     "name": "@zoff-tech/zt-bottom-drawer",
-    "version": "1.0.25",
+    "version": "1.0.28",
     "description": "Bottom Drawer / Web Component",
     "main": "dist/index.cjs.js",
     "module": "dist/custom-elements/index.js",
