@@ -77,8 +77,8 @@
     <div></div>
     <div></div>
   </div>
-  <zt-bottom-drawer id="drawer" hide-on-position-zero=true position-name="bottom"
-    positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
+  <zt-bottom-drawer id="drawer" hide-on-position-zero=true
+    position-name="bottom" positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
   </zt-bottom-drawer>
   <zt-nav id="ztNav">
   </zt-nav>
@@ -277,10 +277,11 @@
     async function showDetail(title) {
       const tech = techs.find(tech => tech.title === title);
       let drawer = document.getElementById("drawer");
-      if(tech.position_drawer){
-        drawer.setAttribute("position-name",tech.position_drawer);
+      if (tech.position_drawer) {
+        drawer.setAttribute("position-name", tech.position_drawer);
       }
-      let resultNav = await drawer.pushNav('nav-detail', { tech });
+ 
+      let resultNav = await drawer.pushNav('nav-detail', { tech }, null, ".contenedor");
       console.log("Result nav ", tech, resultNav);
     }
 
@@ -295,10 +296,56 @@
               <ion-title>${this.tech.title}</ion-title>
             </ion-toolbar>
           </ion-header>
-          <ion-content fullscreen class="ion-padding">
+          <ion-content >
+            <ion-item>
             <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
             <p>${this.tech.description}</p>
-          </ion-content>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>${this.tech.description}</p>
+            </ion-item>
+            <ion-item>
+            <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
+            <p>ULTIMO - ${this.tech.description}</p>
+            </ion-item>
+          </div>
         `;
       }
 
@@ -319,6 +366,9 @@
 
       let drawer = document.getElementById("drawer");
       drawer.pushNav("nav-home", {});
+
+ //     drawer.setAttribute("disableGesture", true);
+ //     drawer.setAttribute("forceScrollY", true);
 
       drawer.addEventListener("hideEvent", () => {
         setTimeout(() => {

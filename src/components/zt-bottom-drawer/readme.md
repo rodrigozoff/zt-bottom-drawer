@@ -12,6 +12,7 @@
 | `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
 | `coefDuration`       | `coef-duration`         |             | `number`  | `75`                                              |
 | `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
+| `forceScrollY`       | `force-scroll-y`        |             | `boolean` | `false`                                           |
 | `hidden`             | `hidden`                |             | `boolean` | `false`                                           |
 | `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `false`                                           |
 | `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
@@ -20,11 +21,12 @@
 
 ## Events
 
-| Event                   | Description | Type                                                                                      |
-| ----------------------- | ----------- | ----------------------------------------------------------------------------------------- |
-| `ztChangePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`              |
-| `ztHideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; gestureTarget: HTMLElement; content: HTMLElement; }>` |
-| `ztNavDidChange`        |             | `CustomEvent<any>`                                                                        |
+| Event                   | Description | Type                                                                                                   |
+| ----------------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
+| `ztChangePositionEvent` |             | `CustomEvent<{ positionName: string; lastPositionName: string; htmlElements: ZTHTMLElementsDrawer; }>` |
+| `ztHideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; gestureTarget: HTMLElement; content: HTMLElement; }>`              |
+| `ztNavDidChange`        |             | `CustomEvent<any>`                                                                                     |
+| `ztNavWillChange`       |             | `CustomEvent<any>`                                                                                     |
 
 
 ## Methods
@@ -46,6 +48,36 @@ Type: `Promise<void>`
 #### Returns
 
 Type: `Promise<void>`
+
+
+
+### `fixPosition(positionName: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `getActiveComponentTagName() => Promise<string>`
+
+
+
+#### Returns
+
+Type: `Promise<string>`
+
+
+
+### `getCurrrentPositionDto() => Promise<ZTPositionDrawer>`
+
+
+
+#### Returns
+
+Type: `Promise<ZTPositionDrawer>`
 
 
 
@@ -149,6 +181,16 @@ Type: `Promise<boolean>`
 
 
 
+### `refreshSizeContent() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setAnimation() => Promise<void>`
 
 
@@ -159,7 +201,37 @@ Type: `Promise<void>`
 
 
 
+### `setPosition(value: ZTPositionDrawer) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setPositionByName(name: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setScrollToTop(duration?: number) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setTranslateY(posY: number, applyAnimation?: boolean) => Promise<void>`
 
 
 

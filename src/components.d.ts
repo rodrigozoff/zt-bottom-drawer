@@ -14,6 +14,10 @@ export namespace Components {
         "autoHeightContent": boolean;
         "coefDuration": number;
         "disableGesture": boolean;
+        "fixPosition": (positionName: string) => Promise<void>;
+        "forceScrollY": boolean;
+        "getActiveComponentTagName": () => Promise<string>;
+        "getCurrrentPositionDto": () => Promise<ZTPositionDrawer>;
         "getNav": () => Promise<HTMLIonNavElement>;
         "getNavActive": () => Promise<ViewController>;
         "getNavCurrentComponent": () => Promise<any>;
@@ -28,8 +32,12 @@ export namespace Components {
         "positionName": string;
         "positions": string;
         "pushNav": (component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<boolean>;
+        "refreshSizeContent": () => Promise<void>;
         "setAnimation": () => Promise<void>;
+        "setPosition": (value: ZTPositionDrawer) => Promise<void>;
         "setPositionByName": (name: string) => Promise<void>;
+        "setScrollToTop": (duration?: number) => Promise<void>;
+        "setTranslateY": (posY: number, applyAnimation?: boolean) => Promise<void>;
         "show": (positionName: string) => Promise<void>;
     }
     interface ZtNav {
@@ -61,11 +69,13 @@ declare namespace LocalJSX {
         "autoHeightContent"?: boolean;
         "coefDuration"?: number;
         "disableGesture"?: boolean;
+        "forceScrollY"?: boolean;
         "hidden"?: boolean;
         "hideOnPositionZero"?: boolean;
-        "onZtChangePositionEvent"?: (event: CustomEvent<{ positionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
+        "onZtChangePositionEvent"?: (event: CustomEvent<{ positionName: string, lastPositionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
         "onZtHideEvent"?: (event: CustomEvent<ZTHTMLElementsDrawer>) => void;
         "onZtNavDidChange"?: (event: CustomEvent<any>) => void;
+        "onZtNavWillChange"?: (event: CustomEvent<any>) => void;
         "positionName"?: string;
         "positions"?: string;
     }
