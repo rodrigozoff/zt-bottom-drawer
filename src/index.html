@@ -77,8 +77,8 @@
     <div></div>
     <div></div>
   </div>
-  <zt-bottom-drawer id="drawer" hide-on-position-zero=true
-    position-name="bottom" positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
+  <zt-bottom-drawer id="drawer" hide-on-position-zero=true position-name="bottom"
+    positions="close-b-10,bottom-b-207,middle-b-400,top-t-60">
   </zt-bottom-drawer>
   <zt-nav id="ztNav">
   </zt-nav>
@@ -90,21 +90,25 @@
         'icon': 'angular',
         'description': 'A powerful Javascript framework for building single page apps. Angular is open source, and maintained by Google.',
         'color': '#E63135',
-        'position_drawer': 'top'
+        'position_drawer': 'top',
+        'fixPosition':true     ,
+        'positions':"close-b-10,bottom-b-207,middle-b-400,top-t-60"   
       },
       {
         'title': 'CSS3 / Open middle',
         'icon': 'css3',
         'description': 'The latest version of cascading stylesheets - the styling language of the web!',
         'color': '#0CA9EA',
-        'position_drawer': 'middle'
+        'position_drawer': 'middle',
+        'positions':"middle-b-300,top-t-5"
       },
       {
         'title': 'HTML5 / Open bottom',
         'icon': 'html5',
         'description': 'The latest version of the web\'s markup language.',
         'color': '#F46529',
-        'position_drawer': 'bottom'
+        'position_drawer': 'bottom',
+        'positions':"close-b-10,bottom-b-207,middle-b-400,top-t-60"
       },
       {
         'title': 'JavaScript',
@@ -277,11 +281,22 @@
     async function showDetail(title) {
       const tech = techs.find(tech => tech.title === title);
       let drawer = document.getElementById("drawer");
-      if (tech.position_drawer) {
-        drawer.setAttribute("position-name", tech.position_drawer);
-      }
- 
-      let resultNav = await drawer.pushNav('nav-detail', { tech }, null, ".contenedor");
+      /*     if (tech.position_drawer) {
+             await drawer.setPositionByName(tech.position_drawer);
+           }*/
+
+           drawer.saveStateCurrentComponent();
+
+      let resultNav = await drawer.pushNav('nav-detail', { tech },
+        {
+          selectorContent: ".contenedor",
+          selectorGesture: "ION-HEADER",
+          positionName: tech.position_drawer,
+          fixCurrentPosition:tech.fixPosition,
+          positions:tech.positions
+        }
+      );
+
       console.log("Result nav ", tech, resultNav);
     }
 
@@ -296,7 +311,7 @@
               <ion-title>${this.tech.title}</ion-title>
             </ion-toolbar>
           </ion-header>
-          <ion-content >
+          <ion-content class="contenedor" >
             <ion-item>
             <ion-icon name="logo-${this.tech.icon}" style="color: ${this.tech.color};" size="large"></ion-icon>
             <p>${this.tech.description}</p>
@@ -349,15 +364,6 @@
         `;
       }
 
-      async canDeactivatePositionDrawer(currentProsition, newPosition) {
-        console.log(currentProsition, newPosition);
-        return false;
-      }
-
-      async canActivatePositionDrawer(newPosition, lastPosition) {
-        console.log(newPosition, lastPosition);
-        return true;
-      }
     });
 
     window.onload = () => {
@@ -365,20 +371,23 @@
       ztNav.pushNav("nav-home", {});
 
       let drawer = document.getElementById("drawer");
-      drawer.pushNav("nav-home", {});
+      //  drawer.setAttribute("forceScrollY", true);
+      //  drawer.setAttribute("autoHeightContent", true);
+      //    drawer.setAttribute("selector-gesture", "ION-HEADER");
 
- //     drawer.setAttribute("disableGesture", true);
- //     drawer.setAttribute("forceScrollY", true);
+      drawer.pushNav("nav-home", null, { positionName: "middle" });
 
-      drawer.addEventListener("hideEvent", () => {
+      //     drawer.setAttribute("disableGesture", true);
+
+      drawer.addEventListener("ztHideEvent", () => {
         setTimeout(() => {
           drawer.show("middle");
         }, 2000);
       });
 
-      drawer.addEventListener("changePositionEvent", () => { console.log("change position") });
+      drawer.addEventListener("ztChangePositionEvent", () => { console.log("change position") });
 
-      drawer.addCallbackCanDeactivateState((postionName, newPositionName, htmlElements) => {
+      /*drawer.addCallbackCanDeactivateState((postionName, newPositionName, htmlElements) => {
         console.log("DeactivateState", postionName, htmlElements);
         return true;
       });
@@ -396,8 +405,8 @@
              }, 1000 * (Math.random() * (3 - 1) + 1));
            });
          }*/
-        return true;
-      });
+      // return true;
+      // });
     }
   </script>
 </body>

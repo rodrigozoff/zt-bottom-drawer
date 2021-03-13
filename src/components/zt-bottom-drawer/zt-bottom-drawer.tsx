@@ -1,5 +1,6 @@
 import { h, Prop, Watch, Host, Element, Component, Event, EventEmitter, Method } from '@stencil/core';
 import { createGesture, createAnimation, Gesture, Animation, GestureDetail, ViewController, TransitionDoneFn, NavOptions } from '@ionic/core';
+import { ActiveComponent, PushNavOptions } from './zt-bottom-dawer';
 
 export type ZTPositionDrawer = { index: number, name: string, distanceTo: "BOTTOM" | "TOP", distance: number, distanceToTop: number, previousPosition: ZTPositionDrawer, nextPosition: ZTPositionDrawer };
 export type ZTHTMLElementsDrawer = { drawer: HTMLElement, gestureTarget: HTMLElement, content: HTMLElement };
@@ -16,27 +17,22 @@ export class ZTBottomDrawer {
 
     animation: Animation;
     gesture?: Gesture;
-
-    @Prop({ reflect: true }) disableGesture: boolean = false;
-
-    @Prop({ reflect: true }) forceScrollY: boolean = false;
-
-    @Prop({ reflect: true, mutable: true }) positionName: string;
-
-    @Prop({ mutable: true, reflect: true }) hideOnPositionZero: boolean = false;
-
-    @Prop({ mutable: true, reflect: true }) hidden: boolean = false;
-    @Prop({ mutable: true, reflect: true }) coefDuration: number = 75;
-
-    @Prop({ reflect: true }) positions: string = "close-b-10,bottom-b-200,middle-b-450,top-t-60";
-
+    _tagNameComponetActive: string;
     _positions: ZTPositionDrawer[];
     _position: ZTPositionDrawer;
 
     _htmlElements: ZTHTMLElementsDrawer;
     nav: HTMLIonNavElement;
 
-    @Prop({ reflect: true }) autoHeightContent: boolean = true;
+    @Prop({ reflect: true }) positionName: string;
+    @Prop({ mutable: true, reflect: true }) hideOnPositionZero: boolean = false;
+    @Prop({ mutable: true, reflect: true }) fixCurrentPosition: boolean = false;
+    @Prop({ reflect: true, mutable: true }) disableGesture: boolean = false;
+    @Prop({ reflect: true, mutable: true }) allowScroll: boolean = true;
+    @Prop({ reflect: true }) positions: string = "close-b-10,bottom-b-200,middle-b-450,top-t-60";
+
+    @Prop({ mutable: true, reflect: true }) hidden: boolean = false;
+    @Prop({ mutable: true, reflect: true }) coefAnimationTime: number = 40;
 
     @Event() ztChangePositionEvent: EventEmitter<{ positionName: string, lastPositionName: string, htmlElements: ZTHTMLElementsDrawer }>;
 
@@ -45,12 +41,31 @@ export class ZTBottomDrawer {
     @Event() ztNavDidChange: EventEmitter<any>;
     @Event() ztNavWillChange: EventEmitter<any>;
 
-    @Method()
-    async addCallbackCanActivateState(callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) {
-        this.callbackCanActivateState = callback;
+    @Watch("disableGesture")
+    setDisableGesture(value: boolean) {
+        if (!value && !this.gesture && this._htmlElements.gestureTarget) {
+            this.gesture = createGesture({
+                el: this._htmlElements.gestureTarget,
+                threshold: 0,
+                gestureName: 'drawer-drag',
+                disableScroll: true, //!this.allowScroll,
+                passive: true,
+                direction: "y",
+                onStart: ev => this.onStart(ev),
+                onMove: (ev: GestureDetail) => { this.onMove(ev) },
+                onEnd: (ev: GestureDetail) => { this.onEnd(ev) }
+            });
+        }
+        if (this.gesture)
+            this.gesture.enable(!value);
     }
 
-    handlerIonScroll: any;
+    @Watch("allowScroll")
+    setAllowScroll(value: boolean) {
+        if (this.ionContent) {
+            this.ionContent.scrollEvents = value;
+        }
+    }
 
     @Method()
     async getNav(): Promise<HTMLIonNavElement> {
@@ -88,39 +103,58 @@ export class ZTBottomDrawer {
                 o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName === "string"
         );
     }
-    currentComponent: any;
 
-    navegando: boolean = false;
     @Method()
-    async pushNav(component: any, propsComponent: any, selectorGesture?: string, selectorContent: string = "ion-content"): Promise<boolean> {
+    async saveStateCurrentComponent() {
+        let contentActive: ActiveComponent = await this.nav.getActive() as unknown as ActiveComponent;
+
+        contentActive.component.__zt_navDrawer.options.allowScroll = this.allowScroll;
+        contentActive.component.__zt_navDrawer.options.disableGesture = this.disableGesture;
+        contentActive.component.__zt_navDrawer.options.positionName = this.positionName;
+        contentActive.component.__zt_navDrawer.options.positions = this.positions;
+        contentActive.component.__zt_navDrawer.options.fixCurrentPosition = this.fixCurrentPosition;
+    }
+
+    ionContent: HTMLIonContentElement;
+    currentComponent: any;
+    navegando: boolean = false;
+
+    @Method()
+    async pushNav(component: string | HTMLElement, propsComponent: any, options: PushNavOptions): Promise<boolean> {
+
         if (this.navegando)
-            return;
+            throw new Error("The Bottom Drawer is navigating, wait after call again. Please use the promise.");
+
+        if (!options) {
+            options = {};
+        }
+        if (!options.positions && !this.positions)
+            throw new Error("The position by default or in the options are required.");
 
         this.navegando = true;
 
         await new Promise<boolean>(async (resolve, reject) => {
+            if (options && !options.selectorContent) {
+                options.selectorContent = "ion-content";
+            }
             if (typeof (component) == "string")
                 component = document.createElement(component);
 
             if (this.isElement(component)) {
-                component.__zt_navDrawer = {
+                (component as any).__zt_navDrawer = {
                     resolve: resolve,
                     reject: reject,
-                    selectorContent: selectorContent,
-                    selectorGesture: selectorGesture
+                    options: options
                 };
-                await this.nav.push(component, propsComponent);
+                console.log(options);
+                this.nav.push(component, propsComponent);
             }
-            return resolve(false);
         });
 
         this.navegando = false;
-
-        this.setHeightContent("CONTENT");
-
+        this.setHeightContainer("CONTENT");
+        return true;
     }
-
-    _tagNameComponetActive: string;
 
     @Method()
     async getActiveComponentTagName(): Promise<string> {
@@ -128,14 +162,29 @@ export class ZTBottomDrawer {
     }
 
     async navDidChange() {
-        let contentActive: any = await this.nav.getActive();
+        let contentActive: ActiveComponent = await this.nav.getActive() as unknown as ActiveComponent;
         this._tagNameComponetActive = contentActive.component.tagName;
 
-        contentActive.__zt_init = true;
-        contentActive.__zt_selectorContent = contentActive.component.__zt_navDrawer.selectorContent;
-        contentActive.__zt_selectorGesture = contentActive.component.__zt_navDrawer.selectorGesture;
+        const opts = contentActive.component.__zt_navDrawer.options;
 
-        await this.initActiveContentNav(contentActive);
+        if (opts.allowScroll != undefined)
+            this.allowScroll = opts.allowScroll;
+
+        if (opts.disableGesture != undefined)
+            this.disableGesture = opts.disableGesture;
+
+        await Promise.all([this.initActiveContentNav(contentActive), new Promise<void>(async (resolve) => {
+            if (opts.positions) {
+                this.setPositions(opts.positions);
+            }
+            if (opts.positionName) {
+                await this.setPositionByName(opts.positionName, true);
+            }
+
+            if (opts.fixCurrentPosition != undefined)
+                this.fixCurrentPosition = opts.fixCurrentPosition;
+            resolve();
+        })]);
 
         contentActive.component.__zt_navDrawer.resolve(true);
 
@@ -143,66 +192,39 @@ export class ZTBottomDrawer {
     }
 
     async initActiveContentNav(contentActive: any) {
-        if (contentActive && contentActive.__zt_init) {
-
+        if (contentActive) {
+            const opts: PushNavOptions = contentActive.component.__zt_navDrawer.options;
             this.currentComponent = contentActive.element;
-            this._htmlElements.content = contentActive.element.querySelector(contentActive.__zt_selectorContent);
+            this._htmlElements.content = this.currentComponent.querySelector(opts.selectorContent);
+            if (!this._htmlElements.content)
+                throw new Error(`Bottom Drawer - Error - The selector ${opts.selectorContent} not found any element`)
 
             let gestureTarget: any = contentActive.element;
 
-            if (contentActive.__zt_selectorGesture)
-                gestureTarget = contentActive.element.querySelector(contentActive.__zt_selectorGesture);
+            if (opts.selectorGesture)
+                gestureTarget = contentActive.element.querySelector(opts.selectorGesture);
 
             this.addGesture(gestureTarget);
 
             if (this._htmlElements &&
                 this._htmlElements.content &&
-                this._htmlElements.content.nodeName == "ION-CONTENT" &&
-                this.autoHeightContent) {
-
-                if (this.ionContent && this.handlerIonScroll) {
-                    this.ionContent.removeEventListener("ionScroll", this.handlerIonScroll)
-                }
+                this._htmlElements.content.nodeName == "ION-CONTENT") {
 
                 this.ionContent = this._htmlElements.content as HTMLIonContentElement;
-                this.ionContent.scrollEvents = true;
-                this.handlerIonScroll = (ev: any) => {
-                    this.ionContentNotTopScroll = ev && ev.detail && ev.detail.scrollTop !== 0;
-                };
-                this.ionContent.addEventListener("ionScroll", this.handlerIonScroll);
+                this.ionContent.scrollEvents = this.allowScroll;
+
             } else {
                 this.ionContent = this._htmlElements.content as HTMLIonContentElement;
             }
-
-            if (!this._position || (this._position && this.positionName != this._position.name))
-                await this.show(this.positionName);
         }
     }
-
-    @Method()
-    async addCallbackCanDeactivateState(callback: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) {
-        this.callbackCanDeactivateState = callback;
-    }
-
-    callbackCanActivateState: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void;
-    callbackCanDeactivateState: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void;
-
-    insertAfter(referenceNode, newNode) {
-        referenceNode.parentNode.insertAfter(newNode, referenceNode.nextSibling);
-    }
-
-    insertBefore(referenceNode, newNode) {
-        referenceNode.parentNode.insertBefore(newNode, referenceNode);
-    }
-
-    ionContent: HTMLIonContentElement;
-    ionContentNotTopScroll: Boolean = false;
 
     async componentDidLoad() {
         this._htmlElements = { drawer: null, gestureTarget: null, content: null };
         this._htmlElements.drawer = this.el;
         this.el.style.setProperty("height", this.getWHWindow().height + "px");
         this.setPositions(this.positions);
+        this.setAnimation();
     }
 
     addGesture(target: HTMLElement) {
@@ -214,51 +236,15 @@ export class ZTBottomDrawer {
             threshold: 0,
             gestureName: 'drawer-drag',
             disableScroll: true,
-            passive: true,
+            passive: false,
             direction: "y",
-            onStart: ev => this.onStart(ev),
+            onStart: ev => { this.onStart(ev) },
             onMove: (ev: GestureDetail) => { this.onMove(ev) },
             onEnd: (ev: GestureDetail) => { this.onEnd(ev) }
         });
 
         if (this.gesture)
             this.gesture.enable(!this.disableGesture);
-    }
-
-    @Watch("disableGesture")
-    setDisableGesture(value: boolean) {
-        if (!value && !this.gesture && this._htmlElements.gestureTarget) {
-            this.gesture = createGesture({
-                el: this._htmlElements.gestureTarget,
-                threshold: 0,
-                gestureName: 'drawer-drag',
-                disableScroll: true,
-                passive: true,
-                direction: "y",
-                onStart: ev => this.onStart(ev),
-                onMove: (ev: GestureDetail) => { this.onMove(ev) },
-                onEnd: (ev: GestureDetail) => { this.onEnd(ev) }
-            });
-        }
-        if (this.gesture)
-            this.gesture.enable(!value);
-
-        this.setForceScrollY(this.forceScrollY);
-    }
-
-    @Watch("forceScrollY")
-    setForceScrollY(value: boolean) {
-        if (!this.ionContent)
-            return;
-
-        if (this.disableGesture) {
-            if (this.gesture)
-                this.gesture.enable(false);
-            this.ionContent.scrollY = value;
-            if (!value) {
-                this.ionContent.scrollToTop(200);
-            }
-        }
     }
 
     maxTop: number;
@@ -307,17 +293,16 @@ export class ZTBottomDrawer {
         this._positions = positions;
     }
 
-    @Method()
     async setAnimation() {
         this.animation = createAnimation()
             .addElement(this.el);
 
         this.animation
             .duration(1000)
-            .fromTo('transform', `translateY(${this.getWHWindow().height}px)`, `translateY(${0}px)`);
+            .fromTo('transform', `translateY(${this.getWHWindow().height}px)`, `translateY(0px)`);
+        this.animation.progressStart(true, .1);
 
         if (this._position) {
-            this.startedAnimation = false;
             this.animation.progressStep(1 - this._position.distanceToTop / this.getWHWindow().height);
         }
     }
@@ -342,24 +327,9 @@ export class ZTBottomDrawer {
     async hide() {
         this.gesture.enable(false);
         this.hidden = true;
-
-        let animation = createAnimation()
-            .addElement(this.el);
-
         let hidePos = this.getWHWindow().height + 10;
-        animation
-            .duration(this.getDuration(hidePos, this.el))
-            .to('transform', `translateY(${hidePos}px)`).play().then(() => {
-                this.el.style.setProperty("display", "none");
-            });
-    }
-
-    @Method()
-    async fixPosition(positionName: string) {
-        await this.show(positionName);
-        this.disableGesture = true;
-        this.forceScrollY = true;
-        this.setHeightContent("CONTENT");
+        await this.setTranslateY(hidePos, true);
+        this.el.style.setProperty("display", "none");
     }
 
     @Method()
@@ -367,6 +337,7 @@ export class ZTBottomDrawer {
         if (!positionName) {
             return;
         }
+        this.el.style.setProperty("display", "inline");
 
         let positionToShow: ZTPositionDrawer = await this.getPositionByName(positionName);
 
@@ -374,34 +345,10 @@ export class ZTBottomDrawer {
             return;
         }
 
-        this.positionName = positionName;
+        await this.setPosition(positionToShow);
 
-        if (this.gesture) {
-            this.gesture.enable(false);
-        }
-
-        this.el.style.setProperty("display", "inline");
-        this.setAnimation();
         this.hidden = false;
-
-        let animation = createAnimation()
-            .addElement(this.el);
-
-        animation
-            .duration(350)
-            .fromTo('transform', `translateY(${this.getWHWindow().height}px)`, `translateY(${positionToShow.distanceToTop}px)`);
-
-        //this.setHeightContent("MAX"); //--
-
-        animation.play().then(() => {
-            this._position = positionToShow;
-            this.positionName = positionToShow.name;
-            this.setDisableGesture(this.disableGesture);
-            this.setHeightContent("CONTENT")
-            this.setAnimation();
-        });
     }
-
 
     deltaChangeSate: number = 5;
     getPositionByPosY(posY: number, direccion: "UP" | "DOWN"): ResultgetPositionByPosY {
@@ -436,26 +383,46 @@ export class ZTBottomDrawer {
     enTouchMove: Boolean = false;
 
     cancelMove: Boolean = false;
+  //  contadorGesture: number = 0;
 
     onStart(ev: GestureDetail) {
+      //  this.contadorGesture = this.contadorGesture + 1;
+        if (this.fixCurrentPosition) {
+            this.cancelMove = true;
+            return;
+        }
+
         if ((ev.event as any).path) {
             let elementos: HTMLElement[] = (ev.event as any).path;
             let eleContent = elementos.find((el) => {
                 return el === this._htmlElements.content;
             });
-            if (eleContent && this.ionContentNotTopScroll) {
+            if (eleContent) {
                 this.cancelMove = true;
                 return;
+                /*let ionContentTopScroll = this.ionContent.shadowRoot.querySelector("main").scrollTop === 0;
+                let ionContentBootomScroll = this.ionContent.shadowRoot.querySelector("main").scrollTop === (this.ionContent.shadowRoot.querySelector("main").scrollHeight - this.ionContent.shadowRoot.querySelector("main").offsetHeight);
+                if (!ionContentTopScroll && !ionContentBootomScroll) {
+                    this.cancelMove = true;
+                    return;
+                }*/
             }
         }
 
         this.cancelMove = false;
 
-        if (this._position.nextPosition && this.ionContent)
-            this.ionContent.scrollToTop(200);
+        if (this.ionContent) {
+            this.ionContent.scrollToTop(0)
+            if (this.allowScroll)
+                this.ionContent.scrollY = false;
+        }
+
+        this.setHeightContainer("MAX");
 
         this.startPosTopMove = this._htmlElements.drawer.getBoundingClientRect().top;
         this.lastPositionY = this.startPosTopMove;
+ //       console.log(`onStart contador: ${this.contadorGesture}`);
+ //       console.log(ev);
     }
 
     previusPositionY: number;
@@ -478,45 +445,8 @@ export class ZTBottomDrawer {
 
         this.previusPositionY = this.lastPositionY;
         this.lastPositionY = ev.currentY;
-
-    //    if (Math.abs(this.previusPositionY - this.lastPositionY) < 30)
-     /*       if (this.moveFast) {
-                setTimeout(() => this.animateMoveFast(), 300);
-            } else {*/
-                this.setTranslateY(this.lastCalc);
-  /*          }
-        else {
-            this.moveFast = true;
-            setTimeout(() => this.animateMoveFast(), 1000);
-        }*/
-    }
-
-    async animateMoveFast(posY: number = -100) {
-        if (this.moveFast) {
-
-            if (posY == -100) {
-                posY = this.lastCalc;
-            }
-
-            if (this.moveFastAnimationProgress) {
-                await this.moveFastAnimationProgress;
-            }
-
-            this.moveFastAnimationProgress = new Promise((resolve) => {
-                this.moveFast = false;
-                let animation = createAnimation()
-                    .addElement(this.el);
-
-                animation
-                    .duration(this.getDuration(posY, this.el))
-                    .to('transform', `translateY(${posY}px)`);
-
-                animation.play().then(() => {
-                    this.setAnimation();
-                    resolve();
-                });
-            })
-        }
+   //     console.log(`onMove contador: ${this.contadorGesture} translate to Y ${this.lastCalc}`);
+        this.setTranslateY(this.lastCalc);
     }
 
     async onEnd(ev: GestureDetail): Promise<boolean> {
@@ -526,11 +456,13 @@ export class ZTBottomDrawer {
         this.moveFast = false;
         this.gesture.enable(false);
 
-        if (this.moveFastAnimationProgress) {
-            await this.moveFastAnimationProgress;
+        if (this.ionContent && this.allowScroll) {
+            this.ionContent.scrollY = true;
         }
-
+      // console.log(`onEnd contador: ${this.contadorGesture}`);
+      //  console.log(ev);
         this.changeStateByGesture(ev);
+
         this.startPosTopMove = 0;
         this.setDisableGesture(this.disableGesture);
         return true;
@@ -548,7 +480,7 @@ export class ZTBottomDrawer {
         if (Math.abs(ev.deltaY) == 0) {
             let posY: number = this._position.distanceToTop;
             await this.setTranslateY(posY);
-            //this.setHeightContent("MA");
+            this.setHeightContainer("CONTENT");
             return;
         }
 
@@ -578,7 +510,7 @@ export class ZTBottomDrawer {
 
         await this.setTranslateY(this._position.distanceToTop, true);
         this.setDisableGesture(this.disableGesture);
-        this.setHeightContent("CONTENT");
+        this.setHeightContainer("CONTENT");
     }
 
     windowh: number = -1;
@@ -602,66 +534,47 @@ export class ZTBottomDrawer {
         }
     }
 
-    @Watch('positionName')
-    async watchPositionName(newValue) {
-        if (newValue && this._position && this._position.name !== newValue) {
-            newValue = (newValue as string).toLowerCase();
-            let newPosition = await this.getPositionByName(newValue);
-            if (newPosition && this._position.name !== newPosition.name) {
-                return await this.setPosition(newPosition);
-            }
-        }
-        setTimeout(() => {
-            this.positionName = this._position ? this._position.name : null;
-        }, 10);
-    }
+    /* @Watch('positionName')
+     async watchPositionName(newValue) {
+         if (newValue && this._position && this._position.name !== newValue) {
+             newValue = (newValue as string).toLowerCase();
+             let newPosition = await this.getPositionByName(newValue);
+             if (newPosition && this._position.name !== newPosition.name) {
+                 return await this.setPosition(newPosition);
+             }
+         }
+         setTimeout(() => {
+             this.positionName = this._position ? this._position.name : null;
+         }, 10);
+     }*/
 
     @Method()
-    async setPositionByName(name: string): Promise<void> {
+    async setPositionByName(name: string, force: boolean = false): Promise<void> {
+        if (this.fixCurrentPosition && !force)
+            throw new Error("The CurentPosition of the bottom drawer is fixed")
+
         let newPosition = await this.getPositionByName(name);
-        if (newPosition && this._position.name !== newPosition.name) {
-            return await this.setPosition(newPosition);
+
+        if (newPosition && (force || (!this._position ||
+            (this._position && this._position.name !== newPosition.name)))) {
+            return await this.setPosition(newPosition, force);
         }
     }
 
     @Method()
-    async setPosition(value: ZTPositionDrawer): Promise<void> {
+    async setPosition(value: ZTPositionDrawer, force: boolean = false): Promise<void> {
+        if (!value)
+            return;
+
+        if (this.fixCurrentPosition && !force)
+            throw new Error("The CurentPosition of the bottom drawer is fixed")
+
         if (this.gesture)
             this.gesture.enable(false);
 
-        const lastPosition = this._position.name;
+        const lastPosition = this._position ? this._position.name : undefined;
 
-        if (value.name !== this._position.name) {
-            if (this.callbackCanDeactivateState) {
-                let resultCanDeactivate = await this.callbackCanDeactivateState(this._position.name, value.name, this._htmlElements);
-                if (!resultCanDeactivate) {
-                    value = this._position;
-                }
-            }
-
-            if (this.callbackCanActivateState) {
-                let resultCanActivate = await this.callbackCanActivateState(value.name, this._position.name, this._htmlElements);
-                if (!resultCanActivate) {
-                    value = this._position;
-                }
-            }
-
-            let currentComponent = await this.getNavCurrentComponent();
-
-            if (currentComponent && currentComponent.canDeactivatePositionDrawer) {
-                let result = await currentComponent.canDeactivatePositionDrawer(this._position.name, value.name);
-                if (!result) {
-                    value = this._position;
-                }
-            }
-
-            if (currentComponent && currentComponent.canActivatePositionDrawer) {
-                let result = await currentComponent.canActivatePositionDrawer(value.name, this._position.name);
-                if (!result) {
-                    value = this._position;
-                }
-            }
-
+        if (!this._position || force || (this._position && value.name !== this._position.name)) {
             this._position = value;
             this.positionName = this._position.name;
             this.ztChangePositionEvent.emit({ positionName: this.positionName, lastPositionName: lastPosition, htmlElements: this._htmlElements });
@@ -676,77 +589,67 @@ export class ZTBottomDrawer {
             }
         }
 
-        this.setHeightContent("MAX");//--
-
+        this.setHeightContainer("MAX");
         await this.setTranslateY(value.distanceToTop, true);
-
-        this.setHeightContent("CONTENT");
+        this.setHeightContainer("CONTENT");
         this.setDisableGesture(this.disableGesture);
-
     }
 
-    ultimoValue: number = 0;
-
-    getDuration(posY, el) {
-        let offset = el.getBoundingClientRect();
-        let delta = Math.abs(posY - offset.top)
-        let duration = (delta / 100) * this.coefDuration;
-        //console.log(`PosY:${posY} Delta:${delta} Duration:${duration}`);
+    getDuration(delta: number) {
+        let duration = (delta / 1000) * this.coefAnimationTime;
         return duration;
     }
 
-    startedAnimation: boolean = false;
+    ultimoValuePosY: number = 0;
+    animateRoloPromise: Promise<void> | undefined;
+    intervalAnimation: number
+    posyAnimate: number;
+
+    async animateRolo(initialY: number, finalY: number) {
+        if (this.animateRoloPromise)
+            return this.animateRoloPromise
+
+        const delta = Math.abs(initialY - finalY);
+        const paso = delta / this.getDuration(delta);
+        const signo: number = initialY > finalY ? -1 : 1;
+        this.posyAnimate = initialY;
+        this.animateRoloPromise = new Promise((resolve) => {
+            this.intervalAnimation = setInterval(() => {
+                this.posyAnimate = this.posyAnimate + paso * signo;
+                this.animation.progressStep(1 - this.posyAnimate / this.getWHWindow().height);
+                if ((signo > 0 && this.posyAnimate > finalY) || (signo < 0 && this.posyAnimate < finalY)) {
+                    this.animation.progressStep(1 - finalY / this.getWHWindow().height);
+                    clearInterval(this.intervalAnimation);
+                    resolve();
+                }
+            }, this.getDuration(delta));
+        });
+        await this.animateRoloPromise;
+        this.animateRoloPromise = undefined;
+    }
+
     @Method()
     async setTranslateY(posY: number, applyAnimation: boolean = false): Promise<void> {
         return new Promise(async (resolve) => {
 
-            if (this.ultimoValue === posY) {
+            if (this.ultimoValuePosY === posY) {
                 return resolve();
             }
 
-            this.ultimoValue = posY;
-
-            if (applyAnimation) {
-                this.startedAnimation = false;
-
-                let animation = createAnimation()
-                    .addElement(this.el);
-                animation
-                    .duration(this.getDuration(posY, this.el))
-                    .to('transform', `translateY(${posY}px)`);
-
-                animation.play().then(async () => {
-                    await this.setAnimation();
-                    resolve();
-                });
-            } else {
-                if (!this.startedAnimation) {
-                    this.animation.progressStart(true, .1);
-                    this.startedAnimation = true;
-                }
+            if (!this.ultimoValuePosY) {
                 this.animation.progressStep(1 - posY / this.getWHWindow().height);
-                resolve();
+            } else {
+                if (applyAnimation)
+                    await this.animateRolo(this.ultimoValuePosY, posY);
+                else {
+                    this.animation.progressStep(1 - posY / this.getWHWindow().height);
+                }
             }
+            this.ultimoValuePosY = posY;
+            resolve();
         });
     }
 
-    setHeightContent(heightOf: "CONTENT" | "MAX") {
-        if (this.ionContent) {
-            if (this.forceScrollY && this.disableGesture) {
-                this.ionContent.scrollY = true;
-                //  heightOf = "CONTENT";
-            } else {
-                if (heightOf === "CONTENT") {
-                    this.ionContent.scrollY = true;
-                }
-                if (heightOf === "MAX") {
-                    this.ionContent.scrollToTop(200);
-                    this.ionContent.scrollY = false;
-                }
-            }
-        }
-        this.setHeightContainer(heightOf);
-    }
 
     setHeightContainer(heightOf: "CONTENT" | "MAX", ignorarCacheWindowHeight: boolean = false) {
         const h = this.getWHWindow(ignorarCacheWindowHeight).height;
@@ -755,8 +658,10 @@ export class ZTBottomDrawer {
         if (heightOf === "MAX") {
             value = value - this.maxTop;
         } else {
+
             if (!this.ionContent || this.navegando)
                 return;
+
             const brContent = this.ionContent.getBoundingClientRect();
             const topcontent = brContent.top;
             const topParent = this.el.getBoundingClientRect().top;
@@ -785,6 +690,7 @@ export class ZTBottomDrawer {
             <ion-nav onIonNavWillChange={() => { this.navWillchange() }} onIonNavDidChange={() => { this.navDidChange(); }} ref={elNsv => this.nav = elNsv} ></ion-nav>
         </Host>);
     }
+
 
     navWillchange() {
         this.ztNavWillChange.emit();

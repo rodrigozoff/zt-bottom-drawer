@@ -13,6 +13,10 @@ $ npm i @zoff-tech/zt-bottom-drawer
 
 
 
+# zt-bottom-drawer
+
+
+
 <!-- Auto Generated Below -->
 
 
@@ -20,9 +24,10 @@ $ npm i @zoff-tech/zt-bottom-drawer
 
 | Property             | Attribute               | Description | Type      | Default                                           |
 | -------------------- | ----------------------- | ----------- | --------- | ------------------------------------------------- |
-| `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
-| `coefDuration`       | `coef-duration`         |             | `number`  | `75`                                              |
+| `allowScroll`        | `allow-scroll`          |             | `boolean` | `true`                                            |
+| `coefAnimationTime`  | `coef-animation-time`   |             | `number`  | `40`                                              |
 | `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
+| `fixCurrentPosition` | `fix-current-position`  |             | `boolean` | `false`                                           |
 | `hidden`             | `hidden`                |             | `boolean` | `false`                                           |
 | `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `false`                                           |
 | `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
@@ -31,32 +36,33 @@ $ npm i @zoff-tech/zt-bottom-drawer
 
 ## Events
 
-| Event                   | Description | Type                                                                                      |
-| ----------------------- | ----------- | ----------------------------------------------------------------------------------------- |
-| `ztChangePositionEvent` |             | `CustomEvent<{ positionName: string; htmlElements: ZTHTMLElementsDrawer; }>`              |
-| `ztHideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; gestureTarget: HTMLElement; content: HTMLElement; }>` |
-| `ztNavDidChange`        |             | `CustomEvent<any>`                                                                        |
+| Event                   | Description | Type                                                                                                   |
+| ----------------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
+| `ztChangePositionEvent` |             | `CustomEvent<{ positionName: string; lastPositionName: string; htmlElements: ZTHTMLElementsDrawer; }>` |
+| `ztHideEvent`           |             | `CustomEvent<{ drawer: HTMLElement; gestureTarget: HTMLElement; content: HTMLElement; }>`              |
+| `ztNavDidChange`        |             | `CustomEvent<any>`                                                                                     |
+| `ztNavWillChange`       |             | `CustomEvent<any>`                                                                                     |
 
 
 ## Methods
 
-### `addCallbackCanActivateState(callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>`
+### `getActiveComponentTagName() => Promise<string>`
 
 
 
 #### Returns
 
-Type: `Promise<void>`
+Type: `Promise<string>`
 
 
 
-### `addCallbackCanDeactivateState(callback: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>`
+### `getCurrrentPositionDto() => Promise<ZTPositionDrawer>`
 
 
 
 #### Returns
 
-Type: `Promise<void>`
+Type: `Promise<ZTPositionDrawer>`
 
 
 
@@ -150,7 +156,7 @@ Type: `Promise<void>`
 
 
 
-### `pushNav(component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<boolean>`
+### `pushNav(component: string | HTMLElement, propsComponent: any, options: PushNavOptions) => Promise<boolean>`
 
 
 
@@ -160,7 +166,7 @@ Type: `Promise<boolean>`
 
 
 
-### `setAnimation() => Promise<void>`
+### `refreshSizeContent() => Promise<void>`
 
 
 
@@ -170,7 +176,47 @@ Type: `Promise<void>`
 
 
 
-### `setPositionByName(name: string) => Promise<void>`
+### `saveStateCurrentComponent() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setPosition(value: ZTPositionDrawer, force?: boolean) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setPositionByName(name: string, force?: boolean) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setScrollToTop(duration?: number) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `setTranslateY(posY: number, applyAnimation?: boolean) => Promise<void>`
 
 
 
@@ -207,32 +253,6 @@ graph TD;
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*
-
-## Control over Activates and Deactivates states 
-
-If the callbacks return a promise with result equal a false the change of state is canceled.
-
-### Example in StencilJS
-
-```javascript
-
-  componentDidLoad() {
-    this.drawer.addCallbackCanActivateState(this.callbackCanActivateChangeState);
-    this.drawer.addCallbackCanDeactivateState(this.callbackCanDeactivateChangeState);
-  }
-  
-  async callbackCanDeactivateChangeState(positionName: string, newPositionName: string, elemnts:any): Promise<boolean> {
-    if(state==="TtopOP"){
-      return false; 
-    }
-    return true;
-   }
-
-  async callbackCanActivateChangeState(positionName: string, newPositionName: string, elemnts:any): Promise<boolean> {
-    return true;
-  }
-
-```
 
 # Examples
 

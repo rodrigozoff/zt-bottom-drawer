@@ -7,15 +7,13 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ZTHTMLElementsDrawer, ZTPositionDrawer } from "./components/zt-bottom-drawer/zt-bottom-drawer";
 import { ComponentProps, NavComponent, NavOptions, TransitionDoneFn, ViewController } from "@ionic/core";
+import { ActiveComponent, PushNavOptions } from "./components/zt-bottom-drawer/zt-bottom-dawer";
 export namespace Components {
     interface ZtBottomDrawer {
-        "addCallbackCanActivateState": (callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>;
-        "addCallbackCanDeactivateState": (callback: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>;
-        "autoHeightContent": boolean;
-        "coefDuration": number;
+        "allowScroll": boolean;
+        "coefAnimationTime": number;
         "disableGesture": boolean;
-        "fixPosition": (positionName: string) => Promise<void>;
-        "forceScrollY": boolean;
+        "fixCurrentPosition": boolean;
         "getActiveComponentTagName": () => Promise<string>;
         "getCurrrentPositionDto": () => Promise<ZTPositionDrawer>;
         "getNav": () => Promise<HTMLIonNavElement>;
@@ -31,11 +29,11 @@ export namespace Components {
         "hideOnPositionZero": boolean;
         "positionName": string;
         "positions": string;
-        "pushNav": (component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<boolean>;
+        "pushNav": (component: string | HTMLElement, propsComponent: any, options: PushNavOptions) => Promise<boolean>;
         "refreshSizeContent": () => Promise<void>;
-        "setAnimation": () => Promise<void>;
-        "setPosition": (value: ZTPositionDrawer) => Promise<void>;
-        "setPositionByName": (name: string) => Promise<void>;
+        "saveStateCurrentComponent": () => Promise<void>;
+        "setPosition": (value: ZTPositionDrawer, force?: boolean) => Promise<void>;
+        "setPositionByName": (name: string, force?: boolean) => Promise<void>;
         "setScrollToTop": (duration?: number) => Promise<void>;
         "setTranslateY": (posY: number, applyAnimation?: boolean) => Promise<void>;
         "show": (positionName: string) => Promise<void>;
@@ -66,10 +64,10 @@ declare global {
 }
 declare namespace LocalJSX {
     interface ZtBottomDrawer {
-        "autoHeightContent"?: boolean;
-        "coefDuration"?: number;
+        "allowScroll"?: boolean;
+        "coefAnimationTime"?: number;
         "disableGesture"?: boolean;
-        "forceScrollY"?: boolean;
+        "fixCurrentPosition"?: boolean;
         "hidden"?: boolean;
         "hideOnPositionZero"?: boolean;
         "onZtChangePositionEvent"?: (event: CustomEvent<{ positionName: string, lastPositionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;

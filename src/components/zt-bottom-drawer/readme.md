@@ -9,10 +9,10 @@
 
 | Property             | Attribute               | Description | Type      | Default                                           |
 | -------------------- | ----------------------- | ----------- | --------- | ------------------------------------------------- |
-| `autoHeightContent`  | `auto-height-content`   |             | `boolean` | `true`                                            |
-| `coefDuration`       | `coef-duration`         |             | `number`  | `75`                                              |
+| `allowScroll`        | `allow-scroll`          |             | `boolean` | `true`                                            |
+| `coefAnimationTime`  | `coef-animation-time`   |             | `number`  | `40`                                              |
 | `disableGesture`     | `disable-gesture`       |             | `boolean` | `false`                                           |
-| `forceScrollY`       | `force-scroll-y`        |             | `boolean` | `false`                                           |
+| `fixCurrentPosition` | `fix-current-position`  |             | `boolean` | `false`                                           |
 | `hidden`             | `hidden`                |             | `boolean` | `false`                                           |
 | `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `false`                                           |
 | `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
@@ -30,36 +30,6 @@
 
 
 ## Methods
-
-### `addCallbackCanActivateState(callback: (positionName: string, oldState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>`
-
-
-
-#### Returns
-
-Type: `Promise<void>`
-
-
-
-### `addCallbackCanDeactivateState(callback: (positionName: string, newState: string, htmlElements: ZTHTMLElementsDrawer) => Promise<boolean | void> | void) => Promise<void>`
-
-
-
-#### Returns
-
-Type: `Promise<void>`
-
-
-
-### `fixPosition(positionName: string) => Promise<void>`
-
-
-
-#### Returns
-
-Type: `Promise<void>`
-
-
 
 ### `getActiveComponentTagName() => Promise<string>`
 
@@ -171,7 +141,7 @@ Type: `Promise<void>`
 
 
 
-### `pushNav(component: any, propsComponent: any, selectorGesture?: string, selectorContent?: string) => Promise<boolean>`
+### `pushNav(component: string | HTMLElement, propsComponent: any, options: PushNavOptions) => Promise<boolean>`
 
 
 
@@ -191,7 +161,7 @@ Type: `Promise<void>`
 
 
 
-### `setAnimation() => Promise<void>`
+### `saveStateCurrentComponent() => Promise<void>`
 
 
 
@@ -201,7 +171,7 @@ Type: `Promise<void>`
 
 
 
-### `setPosition(value: ZTPositionDrawer) => Promise<void>`
+### `setPosition(value: ZTPositionDrawer, force?: boolean) => Promise<void>`
 
 
 
@@ -211,7 +181,7 @@ Type: `Promise<void>`
 
 
 
-### `setPositionByName(name: string) => Promise<void>`
+### `setPositionByName(name: string, force?: boolean) => Promise<void>`
 
 
 
