@@ -63,7 +63,7 @@ export class ZTBottomDrawer {
     @Watch("allowScroll")
     setAllowScroll(value: boolean) {
         if (this.ionContent) {
-            this.ionContent.scrollEvents = value;
+            this.ionContent.scrollY = value;
         }
     }
 
@@ -196,6 +196,7 @@ export class ZTBottomDrawer {
             const opts: PushNavOptions = contentActive.component.__zt_navDrawer.options;
             this.currentComponent = contentActive.element;
             this._htmlElements.content = this.currentComponent.querySelector(opts.selectorContent);
+           
             if (!this._htmlElements.content)
                 throw new Error(`Bottom Drawer - Error - The selector ${opts.selectorContent} not found any element`)
 
@@ -211,7 +212,7 @@ export class ZTBottomDrawer {
                 this._htmlElements.content.nodeName == "ION-CONTENT") {
 
                 this.ionContent = this._htmlElements.content as HTMLIonContentElement;
-                this.ionContent.scrollEvents = this.allowScroll;
+                this.ionContent.scrollY = this.allowScroll;
 
             } else {
                 this.ionContent = this._htmlElements.content as HTMLIonContentElement;
@@ -383,10 +384,10 @@ export class ZTBottomDrawer {
     enTouchMove: Boolean = false;
 
     cancelMove: Boolean = false;
-  //  contadorGesture: number = 0;
+    //  contadorGesture: number = 0;
 
     onStart(ev: GestureDetail) {
-      //  this.contadorGesture = this.contadorGesture + 1;
+        //  this.contadorGesture = this.contadorGesture + 1;
         if (this.fixCurrentPosition) {
             this.cancelMove = true;
             return;
@@ -421,8 +422,8 @@ export class ZTBottomDrawer {
 
         this.startPosTopMove = this._htmlElements.drawer.getBoundingClientRect().top;
         this.lastPositionY = this.startPosTopMove;
- //       console.log(`onStart contador: ${this.contadorGesture}`);
- //       console.log(ev);
+        //       console.log(`onStart contador: ${this.contadorGesture}`);
+        //       console.log(ev);
     }
 
     previusPositionY: number;
@@ -445,7 +446,7 @@ export class ZTBottomDrawer {
 
         this.previusPositionY = this.lastPositionY;
         this.lastPositionY = ev.currentY;
-   //     console.log(`onMove contador: ${this.contadorGesture} translate to Y ${this.lastCalc}`);
+        //     console.log(`onMove contador: ${this.contadorGesture} translate to Y ${this.lastCalc}`);
         this.setTranslateY(this.lastCalc);
     }
 
@@ -459,8 +460,8 @@ export class ZTBottomDrawer {
         if (this.ionContent && this.allowScroll) {
             this.ionContent.scrollY = true;
         }
-      // console.log(`onEnd contador: ${this.contadorGesture}`);
-      //  console.log(ev);
+        // console.log(`onEnd contador: ${this.contadorGesture}`);
+        //  console.log(ev);
         this.changeStateByGesture(ev);
 
         this.startPosTopMove = 0;
