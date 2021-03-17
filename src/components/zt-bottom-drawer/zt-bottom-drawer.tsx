@@ -64,6 +64,7 @@ export class ZTBottomDrawer {
     setAllowScroll(value: boolean) {
         if (this.ionContent) {
             this.ionContent.scrollY = value;
+            this.ionContent.scrollEvents = value;
         }
     }
 
@@ -196,7 +197,7 @@ export class ZTBottomDrawer {
             const opts: PushNavOptions = contentActive.component.__zt_navDrawer.options;
             this.currentComponent = contentActive.element;
             this._htmlElements.content = this.currentComponent.querySelector(opts.selectorContent);
-           
+
             if (!this._htmlElements.content)
                 throw new Error(`Bottom Drawer - Error - The selector ${opts.selectorContent} not found any element`)
 
@@ -213,6 +214,7 @@ export class ZTBottomDrawer {
 
                 this.ionContent = this._htmlElements.content as HTMLIonContentElement;
                 this.ionContent.scrollY = this.allowScroll;
+                this.ionContent.scrollEvents = this.allowScroll;
 
             } else {
                 this.ionContent = this._htmlElements.content as HTMLIonContentElement;
@@ -414,8 +416,10 @@ export class ZTBottomDrawer {
 
         if (this.ionContent) {
             this.ionContent.scrollToTop(0)
-            if (this.allowScroll)
+            if (this.allowScroll) {
                 this.ionContent.scrollY = false;
+                this.ionContent.scrollEvents = false;
+            }
         }
 
         this.setHeightContainer("MAX");
@@ -459,6 +463,7 @@ export class ZTBottomDrawer {
 
         if (this.ionContent && this.allowScroll) {
             this.ionContent.scrollY = true;
+            this.ionContent.scrollEvents = true;
         }
         // console.log(`onEnd contador: ${this.contadorGesture}`);
         //  console.log(ev);
