@@ -15,13 +15,14 @@ export namespace Components {
         "disableGesture": boolean;
         "fixCurrentPosition": boolean;
         "getActiveComponentTagName": () => Promise<string>;
+        "getCurrentIndex": () => Promise<number>;
         "getCurrrentPositionDto": () => Promise<ZTPositionDrawer>;
         "getNav": () => Promise<HTMLIonNavElement>;
         "getNavActive": () => Promise<ViewController>;
         "getNavCurrentComponent": () => Promise<any>;
         "getPositionByIndex": (index: number) => Promise<ZTPositionDrawer>;
         "getPositionByName": (name: string) => Promise<ZTPositionDrawer>;
-        "goBack": (opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>;
+        "goBack": (amountBack?: number, opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>;
         "goBackToIndex": (index: number, opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>;
         "goBackToRoot": (opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>;
         "hidden": boolean;
@@ -31,7 +32,7 @@ export namespace Components {
         "positions": string;
         "pushNav": (component: string | HTMLElement, propsComponent: any, options: PushNavOptions) => Promise<boolean>;
         "refreshSizeContent": () => Promise<void>;
-        "saveStateCurrentComponent": () => Promise<void>;
+        "saveStateInActiveComponent": () => Promise<void>;
         "setPosition": (value: ZTPositionDrawer, force?: boolean) => Promise<void>;
         "setPositionByName": (name: string, force?: boolean) => Promise<void>;
         "setScrollToTop": (duration?: number) => Promise<void>;

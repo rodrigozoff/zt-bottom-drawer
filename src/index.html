@@ -91,8 +91,8 @@
         'description': 'A powerful Javascript framework for building single page apps. Angular is open source, and maintained by Google.',
         'color': '#E63135',
         'position_drawer': 'top',
-        'fixPosition':true     ,
-        'positions':"close-b-10,bottom-b-207,middle-b-400,top-t-60"   
+        'fixPosition': true,
+        'positions': "close-b-10,bottom-b-207,middle-b-400,top-t-60"
       },
       {
         'title': 'CSS3 / Open middle',
@@ -100,8 +100,8 @@
         'description': 'The latest version of cascading stylesheets - the styling language of the web!',
         'color': '#0CA9EA',
         'position_drawer': 'middle',
-        'allowScroll':false,
-        'positions':"middle-b-300,top-t-5"
+        'allowScroll': false,
+        'positions': "middle-b-300,top-t-5"
       },
       {
         'title': 'HTML5 / Open bottom',
@@ -109,7 +109,7 @@
         'description': 'The latest version of the web\'s markup language.',
         'color': '#F46529',
         'position_drawer': 'bottom',
-        'positions':"close-b-10,bottom-b-207,middle-b-400,top-t-60"
+        'positions': "close-b-10,bottom-b-207,middle-b-400,top-t-60"
       },
       {
         'title': 'JavaScript',
@@ -279,23 +279,26 @@
       }
     });
 
+     function backDrawer(ev) {
+      ev[0].preventDefault()
+      let drawer = document.getElementById("drawer");
+      drawer.goBack(10);
+    }
+
+
     async function showDetail(title) {
       const tech = techs.find(tech => tech.title === title);
       let drawer = document.getElementById("drawer");
-      /*     if (tech.position_drawer) {
-             await drawer.setPositionByName(tech.position_drawer);
-           }*/
-
-           drawer.saveStateCurrentComponent();
+      drawer.saveStateInActiveComponent();
 
       let resultNav = await drawer.pushNav('nav-detail', { tech },
         {
           selectorContent: ".contenedor",
           selectorGesture: "ION-HEADER",
           positionName: tech.position_drawer,
-          fixCurrentPosition:tech.fixPosition,
-          positions:tech.positions,
-          allowScroll:tech.allowScroll===undefined?true:tech.allowScroll
+          fixCurrentPosition: tech.fixPosition,
+          positions: tech.positions,
+          allowScroll: tech.allowScroll === undefined ? true : tech.allowScroll
         }
       );
 
@@ -308,7 +311,7 @@
           <ion-header translucent>
             <ion-toolbar>
               <ion-buttons slot="start">
-                <ion-back-button defaultHref="/"></ion-back-button>
+                <ion-button  onclick="backDrawer(arguments)">Back</ion-button>
               </ion-buttons>
               <ion-title>${this.tech.title}</ion-title>
             </ion-toolbar>
@@ -373,13 +376,9 @@
       ztNav.pushNav("nav-home", {});
 
       let drawer = document.getElementById("drawer");
-      //  drawer.setAttribute("forceScrollY", true);
-      //  drawer.setAttribute("autoHeightContent", true);
-      //    drawer.setAttribute("selector-gesture", "ION-HEADER");
+      //  drawer.setAttribute("selector-gesture", "ION-HEADER");
 
       drawer.pushNav("nav-home", null, { positionName: "middle" });
-
-      //     drawer.setAttribute("disableGesture", true);
 
       drawer.addEventListener("ztHideEvent", () => {
         setTimeout(() => {

@@ -48,7 +48,7 @@ export class ZTBottomDrawer {
                 el: this._htmlElements.gestureTarget,
                 threshold: 0,
                 gestureName: 'drawer-drag',
-                disableScroll: true, //!this.allowScroll,
+                disableScroll: true,
                 passive: true,
                 direction: "y",
                 onStart: ev => this.onStart(ev),
@@ -74,7 +74,16 @@ export class ZTBottomDrawer {
     }
 
     @Method()
-    async goBack(opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined): Promise<Boolean> {
+    async goBack(amountBack?: number, opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined): Promise<Boolean> {
+        if (amountBack) {
+            amountBack = amountBack - 1;
+            const cantidadHijos = this.el.firstChild.childNodes.length;
+            if (amountBack < cantidadHijos) {
+                await this.nav.removeIndex(cantidadHijos - amountBack - 1, amountBack);
+            } else {
+                return await this.nav.popToRoot();
+            }
+        }
         return this.nav.pop(opts, done);
     }
 
@@ -106,7 +115,7 @@ export class ZTBottomDrawer {
     }
 
     @Method()
-    async saveStateCurrentComponent() {
+    async saveStateInActiveComponent() {
         let contentActive: ActiveComponent = await this.nav.getActive() as unknown as ActiveComponent;
 
         contentActive.component.__zt_navDrawer.options.allowScroll = this.allowScroll;
@@ -160,6 +169,11 @@ export class ZTBottomDrawer {
     @Method()
     async getActiveComponentTagName(): Promise<string> {
         return this._tagNameComponetActive;
+    }
+
+    @Method()
+    async getCurrentIndex(): Promise<number> {
+        return this.el.firstChild.childNodes.length;
     }
 
     async navDidChange() {
@@ -258,6 +272,7 @@ export class ZTBottomDrawer {
         let splitPositions: string[] = newPositions.toLowerCase().split(",");
         let dimensionesWin = this.getWHWindow();
         let previous: ZTPositionDrawer;
+
         splitPositions.forEach(positionCadena => {
             let splitPosition: string[] = positionCadena.split("-");
             if (splitPosition.length === 3) {
@@ -303,6 +318,7 @@ export class ZTBottomDrawer {
         this.animation
             .duration(1000)
             .fromTo('transform', `translateY(${this.getWHWindow().height}px)`, `translateY(0px)`);
+
         this.animation.progressStart(true, .1);
 
         if (this._position) {
@@ -386,10 +402,7 @@ export class ZTBottomDrawer {
     enTouchMove: Boolean = false;
 
     cancelMove: Boolean = false;
-    //  contadorGesture: number = 0;
-
     onStart(ev: GestureDetail) {
-        //  this.contadorGesture = this.contadorGesture + 1;
         if (this.fixCurrentPosition) {
             this.cancelMove = true;
             return;
@@ -596,6 +609,11 @@ export class ZTBottomDrawer {
         }
 
         this.setHeightContainer("MAX");
+
+        if (this.ionContent) {
+            this.ionContent.scrollToTop(0)
+        }
+
         await this.setTranslateY(value.distanceToTop, true);
         this.setHeightContainer("CONTENT");
         this.setDisableGesture(this.disableGesture);
@@ -655,7 +673,6 @@ export class ZTBottomDrawer {
             resolve();
         });
     }
-
 
     setHeightContainer(heightOf: "CONTENT" | "MAX", ignorarCacheWindowHeight: boolean = false) {
         const h = this.getWHWindow(ignorarCacheWindowHeight).height;

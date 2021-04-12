@@ -161,7 +161,7 @@ Type: `Promise<void>`
 
 
 
-### `saveStateCurrentComponent() => Promise<void>`
+### `saveStateInActiveComponent() => Promise<void>`
 
 
 
