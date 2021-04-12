@@ -41,6 +41,16 @@ Type: `Promise<string>`
 
 
 
+### `getCurrentIndex() => Promise<number>`
+
+
+
+#### Returns
+
+Type: `Promise<number>`
+
+
+
 ### `getCurrrentPositionDto() => Promise<ZTPositionDrawer>`
 
 
@@ -101,7 +111,7 @@ Type: `Promise<ZTPositionDrawer>`
 
 
 
-### `goBack(opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>`
+### `goBack(amountBack?: number, opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<Boolean>`
 
 
 
