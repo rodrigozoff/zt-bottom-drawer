@@ -32,6 +32,8 @@ export namespace Components {
         "positions": string;
         "pushNav": (component: string | HTMLElement, propsComponent: any, options: PushNavOptions) => Promise<boolean>;
         "refreshSizeContent": () => Promise<void>;
+        "safeAreaBottom": number;
+        "safeAreaTop": number;
         "saveStateInActiveComponent": () => Promise<void>;
         "setPosition": (value: ZTPositionDrawer, force?: boolean) => Promise<void>;
         "setPositionByName": (name: string, force?: boolean) => Promise<void>;
@@ -77,6 +79,8 @@ declare namespace LocalJSX {
         "onZtNavWillChange"?: (event: CustomEvent<any>) => void;
         "positionName"?: string;
         "positions"?: string;
+        "safeAreaBottom"?: number;
+        "safeAreaTop"?: number;
     }
     interface ZtNav {
     }

@@ -1,6 +1,6 @@
 # Bottom Drawer
 
-Bottom Drawer WebComponent / StencilJS / Ionic 5 
+Bottom Drawer WebComponent / StencilJS / Ionic 6 
 
 ![alt text](./demo.gif "Demo") | ![alt text](./demo-app-mapa.gif "Demo")
 
@@ -9,16 +9,6 @@ Bottom Drawer WebComponent / StencilJS / Ionic 5
 ```
 $ npm i @zoff-tech/zt-bottom-drawer
 ```
-# zt-bottom-drawer
-
-
-
-# zt-bottom-drawer
-
-
-
-<!-- Auto Generated Below -->
-
 
 ## Properties
 

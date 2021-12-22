@@ -17,6 +17,8 @@
 | `hideOnPositionZero` | `hide-on-position-zero` |             | `boolean` | `false`                                           |
 | `positionName`       | `position-name`         |             | `string`  | `undefined`                                       |
 | `positions`          | `positions`             |             | `string`  | `"close-b-10,bottom-b-200,middle-b-450,top-t-60"` |
+| `safeAreaBottom`     | `safe-area-bottom`      |             | `number`  | `undefined`                                       |
+| `safeAreaTop`        | `safe-area-top`         |             | `number`  | `undefined`                                       |
 
 
 ## Events

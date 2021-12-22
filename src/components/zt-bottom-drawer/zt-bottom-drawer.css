@@ -1,4 +1,9 @@
 zt-bottom-drawer {
+  --zt-sat: env(safe-area-inset-top);
+  --zt-sar: env(safe-area-inset-right);
+  --zt-sab: env(safe-area-inset-bottom);
+  --zt-sal: env(safe-area-inset-left);
+
   position: absolute;
   width: 100%;
   height: 100%;
