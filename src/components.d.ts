@@ -47,6 +47,10 @@ export namespace Components {
         "pushNav": <T extends NavComponent>(component: any, componentProps?: ComponentProps<T> | null | undefined, opts?: NavOptions | null | undefined, done?: TransitionDoneFn | undefined) => Promise<boolean>;
     }
 }
+export interface ZtBottomDrawerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLZtBottomDrawerElement;
+}
 declare global {
     interface HTMLZtBottomDrawerElement extends Components.ZtBottomDrawer, HTMLStencilElement {
     }
@@ -73,10 +77,10 @@ declare namespace LocalJSX {
         "fixCurrentPosition"?: boolean;
         "hidden"?: boolean;
         "hideOnPositionZero"?: boolean;
-        "onZtChangePositionEvent"?: (event: CustomEvent<{ positionName: string, lastPositionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
-        "onZtHideEvent"?: (event: CustomEvent<ZTHTMLElementsDrawer>) => void;
-        "onZtNavDidChange"?: (event: CustomEvent<any>) => void;
-        "onZtNavWillChange"?: (event: CustomEvent<any>) => void;
+        "onZtChangePositionEvent"?: (event: ZtBottomDrawerCustomEvent<{ positionName: string, lastPositionName: string, htmlElements: ZTHTMLElementsDrawer }>) => void;
+        "onZtHideEvent"?: (event: ZtBottomDrawerCustomEvent<ZTHTMLElementsDrawer>) => void;
+        "onZtNavDidChange"?: (event: ZtBottomDrawerCustomEvent<any>) => void;
+        "onZtNavWillChange"?: (event: ZtBottomDrawerCustomEvent<any>) => void;
         "positionName"?: string;
         "positions"?: string;
         "safeAreaBottom"?: number;
