@@ -535,18 +535,18 @@ export class ZTBottomDrawer {
   getWHWindow(ignoreCache: boolean = false) {
     let result = this.windowh;
     if (ignoreCache) {
-      result = window.innerHeight
+      result = (window as any)._zt_wh || window.innerHeight
         || document.documentElement.clientHeight
         || document.body.clientHeight;
     }
     if (result === -1) {
-      result = this.windowh = window.innerHeight
+      result = this.windowh =  (window as any)._zt_wh || window.innerHeight
         || document.documentElement.clientHeight
         || document.body.clientHeight;
     }
     return {
       height: result,
-      width: window.innerWidth
+      width:  (window as any)._zt_wh || window.innerWidth
         || document.documentElement.clientWidth
         || document.body.clientWidth
     }

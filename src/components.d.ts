@@ -8,6 +8,9 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ZTHTMLElementsDrawer, ZTPositionDrawer } from "./components/zt-bottom-drawer/zt-bottom-drawer";
 import { ComponentProps, NavComponent, NavOptions, TransitionDoneFn, ViewController } from "@ionic/core";
 import { ActiveComponent, PushNavOptions } from "./components/zt-bottom-drawer/zt-bottom-dawer";
+export { ZTHTMLElementsDrawer, ZTPositionDrawer } from "./components/zt-bottom-drawer/zt-bottom-drawer";
+export { ComponentProps, NavComponent, NavOptions, TransitionDoneFn, ViewController } from "@ionic/core";
+export { ActiveComponent, PushNavOptions } from "./components/zt-bottom-drawer/zt-bottom-dawer";
 export namespace Components {
     interface ZtBottomDrawer {
         "allowScroll": boolean;

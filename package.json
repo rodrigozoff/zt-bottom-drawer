@@ -1,6 +1,6 @@
 {
     "name": "@zoff-tech/zt-bottom-drawer",
-    "version": "2.0.15",
+    "version": "2.0.17",
     "description": "Bottom Drawer / Web Component",
     "main": "dist/index.cjs.js",
     "module": "dist/index.js",
@@ -23,8 +23,8 @@
         "generate": "stencil generate"
     },
     "dependencies": {
-        "@ionic/core": "^6.2.9",
-        "@stencil/core": "^2.18.0"
+        "@ionic/core": "^7.1.2",
+        "@stencil/core": "^3.4.1"
     },
     "author": "Rodrigo Zoff <rodrigo@zoff.tech> (https://github.com/rodrigozoff)",
     "bugs": {
